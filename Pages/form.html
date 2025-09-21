@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>NovaSmart</title>
+</head>
+<body>
+    <header>
+        <nav class="bg-indigo-500 bg p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="../index.html" class="text-2xl text-black font-bold">NovaSmart</a>
+                <div>
+                    <a href="./Pages/404.html" class="text-black-900 hover:text-white px-3">Acerca de nosotros</a>
+                    <a href="./Pages/404.html" class="text-black-900 hover:text-white px-3">Contacto</a>
+                    <a href="./Pages/404.html" class="text-black-900 hover:text-white px-3">Soporte</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <section class="flex justify-center items-center w-50% m-10">
+            <form method="post" class="flex flex-col justify-evenly items-center h-125 w-30% rounded-lg border-2 p-5">
+                <img src="../src/Images/programmer.png" alt="user" class="size-30 mx-auto my-4">
+                <div class="flex flex-col justify-center items-center">
+                    <label for="name" class="text-left w-100">Nombre</label>
+                    <input type="text" placeholder="Usuario" id="name" class="border-1 rounded-lg p-2 m-2 w-100" />
+                </div>
+                <div class="flex flex-col justify-center items-center">
+                    <label for="Contraseña" class="text-left w-100">Contraseña</label>
+                    <input type="password" placeholder="Contraseña" id="Contraseña" class="border-1 rounded-lg p-2 m-2 w-100" />
+                </div>
+                <hr/>
+                <button type="submit" class="bg-indigo-500 h-10 w-[10rem] rounded-lg text-center">
+                    <a href="../Pages/student.html">Iniciar sesión</a>
+                </button>
+            </form>
+        </section>
+            <section class="flex flex-col justify-evenly h-50 w-50% m-10">
+            <H1 class="font-bold text-center text-4xl">NovaSmart está disponible para estudiantes, docentes y padres de familia</H1>
+            <div class="flex justify-evenly ">
+                <a href="./404.html">Centro de ayuda</a>
+                <a href="./404.html">Guia de usuario</a>
+                <a href="./404.html">Privacidad</a>
+                <a href="./404.html">Terminos de servicios</a>
+            </div>
+        </section>
+    </main>
+    <footer class="bg-indigo-500 text-center">
+        <div class="p-4 mt-10 w-screen flex justify-evenly">
+            <div class="flex flex-col w-100">
+                <figure class="flex items-center">
+                    <img src="../src/Images/cap.svg" alt="Cap" class="size-10 my-4">
+                    <figcaption class="text-4xl">NovaSmart</figcaption>
+                </figure>
+                <p class="text-left">Plataforma educativa integral que conecta a estudiantes, docentes y familias para una experiencia de aprendizaje personalizada y efectiva.</p>
+            </div>
+
+
+            <div class="flex justify-between w-100">
+                <div class="flex flex-col items-center w-50%">
+                    <h3 class="text-xl font-bold">Enlaces rapidos</h3>
+                    <ul class="list-disc text-left">
+                        <li><a href="./Pages/404.html">Acerca de nosotros</a></li>
+                        <li><a href="./Pages/404.html">Terminos de servicios</a></li>
+                        <li><a href="./Pages/404.html">Politica de privacidad</a></li>
+                        <li><a href="./Pages/404.html">Centro de ayuda</a></li>
+                    </ul>
+                </div>
+                <div class="flex flex-col items-center w-50%">
+                    <h3 class="text-xl font-bold">Contacto</h3>
+                    <ul class="list-disc text-left">
+                        <li><a href="./Pages/404.html">soporte@eduportal.edu</a></li>
+                        <li><span>+1 (57) 123-4567</span></li>
+                        <li><a href="./Pages/404.html">Politica de privacidad</a></li>
+                        <li><span>Bogotá, Colombia</span></li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+        <p>&copy; 2025 NovaSmart. Todos los derechos reservados.</p> 
+    </footer>
+</body>
+</html>
