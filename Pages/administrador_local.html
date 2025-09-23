@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>NovaSmart</title>
+</head>
+<body>
+    <header>
+        <nav class="bg-indigo-500 bg p-4">
+            <div class="container mx-auto flex justify-between items-center">
+                <a href="../index.html" class="text-2xl text-black font-bold">NovaSmart</a>
+
+                <div class="flex justify-evenly items-center w-100">
+                    <img src="../src/Images/settings-svgrepo-com.svg" alt="settings" class="size-8"/>
+                    <img src="../src/Images/bell-bing-svgrepo-com.svg" alt="settings" class="size-8"/>
+                    <button class="bg-red-500 rounded-lg p-1 w-40">
+                        <a href="../index.html" class="text-black-900 hover:text-white px-3 w-100% flex justify-evenly items-center">
+                            <img src="../src/Images/exit-svgrepo-com.svg" alt="salir" class="size-8"/>
+                            <p class="">Salir</p>
+                        </a>
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main class="flex items-center p-4 border-r-2">
+        <aside class="w-1/6 h-screen flex flex-col justify-between items-center p-4 border-r-2">
+        
+            <div class="flex flex-col justify-center items-center">
+                <img src="../src/Images/admin-local.svg" alt="user" class="size-20 mx-auto my-4"/>
+                <h2 class="text-2xl font-bold text-center">Mauricio Torres</h2>
+                <p class="text-lg text-center">Administrador local</p>
+            </div>
+            <div class="flex flex-col justify-center items-center w-100%">
+                <button class="bg-indigo-500 h-10 w-[10rem] rounded-lg font my-2"><a href="./404.html">Dashboard</a></button>
+                <button class="bg-indigo-500 h-10 w-[10rem] rounded-lg font my-2"><a href="./404.html">Gestión del personal</a></button>
+            </div>
+            <div class="flex flex-col justify-center items-center w-100%">
+                <button class="bg-indigo-500 h-10 w-[10rem] rounded-lg font my-2"><a href="./Pages/404.html">Configuración</a></button>
+            </div>
+        </aside>
+        <section class="w-5/6 h-screen p-10 flex flex-col justify-evenly items-center">
+            <h1 class="text-4xl font-bold text-center">Gestión del personal</h1>
+            <section class="w-full p-10">
+                <div class="flex justify-between rounded-lg m-2 p-2 border-1">
+                    <input type="text" placeholder="Buscar por nombre o correo" id="search" class="w-full border-1 rounded-lg p-2 m-2 w-100" />
+                    <select name="materias" id="lang" class="border-1 rounded-lg p-2 m-2 w-1/5">
+                        <option disabled selected hidden>Filtra por cargo</option>
+                        <option value="Matemáticas">Matemáticas</option>
+                        <option value="Ciencias">Ciencias</option>
+                        <option value="Historia">Historia</option>
+                        <option value="Inglés">Inglés</option>
+                        <option value="Español">Español</option>
+                    </select>
+                </div>
+
+                <div class="h-[27rem] flex flex-col justify-between items-center rounded-lg m-2 p-2 border-1">
+
+                    <div class="h-[27rem] flex flex-col justify-between items-center rounded-lg m-2 p-6 w-[300px] border-2">
+                        <h3 class="text-2xl font-bold text-center">Próximas tareas</h3>
+                        <img src="../src/Images/task.svg" alt="tasks" class="h-20 w-20 mx-auto my-4">
+                        <p class="text-lg text-center">Revisa tus tareas pendientes y fechas de entrega</p>
+                        <ul class="list-disc items-center text-left w-50%">
+                            <li><span>Matemáticas - Entrega: 10/10/2024</span></li>
+                            <li><span>Ciencias - Entrega: 12/10/2024</span></li>
+                            <li><span>Historia - Entrega: 15/10/2024</span></li>
+                        </ul>
+                        <button class="bg-indigo-500 h-10 w-[10rem] rounded-lg font"><a href="./404.html">Ver todas las tareas</a></button>
+                    </div>
+    
+                    <div class="h-[27rem] flex flex-col justify-between items-center rounded-lg m-2 p-6 w-[300px] border-2">
+                        <h3 class="text-2xl font-bold text-center">Boletin</h3>
+                        <img src="../src/Images/exam.png" alt="tasks" class="h-20 w-20 mx-auto my-4">
+                        <p class="text-lg text-center">Revisa los boletines</p>
+                        <button class="bg-indigo-500 h-15 w-[10rem] rounded-lg font"><a href="./404.html">Ver todas los boletines</a></button>
+                    </div>
+                </div>
+
+            </section>
+        
+        </section>
+    </main>
+</body>
+</html>
