@@ -1,0 +1,28 @@
+# Entornos y secretos
+.env
+.env.local
+.env.*.local
+
+# IDEs y Editores
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Docker
+docker-compose.override.yml
+
+# Backend (Ignora el target pero permite las carpetas de estructura)
+Backend/target/
+Backend/*.log
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+Frontend/build/
+Frontend/.eslintcache
+
+# Bases de Datos locales
+DB/postgres/
+DB/pgadmin/
+!DB/.gitkeep

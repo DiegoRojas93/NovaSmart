@@ -1,0 +1,7 @@
+.git
+.idea/
+.vscode/
+target/
+*.class
+*.log
+# No ignorar mvnw o .mvn ya que se necesitan para el Dockerfile

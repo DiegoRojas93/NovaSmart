@@ -1,0 +1,8 @@
+* text=auto
+
+# Archivos que deben mantener formato Linux (LF) por Docker
+*.sh text eol=lf
+Backend/mvnw text eol=lf
+Dockerfile text eol=lf
+Dockerfile.dev text eol=lf
+docker-compose.yml text eol=lf

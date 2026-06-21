@@ -1,0 +1,75 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: novasmart_db
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-novasmart_db}
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./DB/postgres:/var/lib/postgresql/data
+    networks:
+      - novasmart_net
+    # --- NUEVO: Comprobación de salud ---
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-novasmart_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: novasmart_pgadmin
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5050:80"
+    depends_on:
+      - db
+    volumes:
+      - ./DB/pgadmin:/var/lib/pgadmin
+    networks:
+      - novasmart_net
+
+  backend:
+    build:
+      context: ./Backend
+      dockerfile: Dockerfile
+    container_name: novasmart_backend
+    restart: on-failure
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-novasmart_db}
+      - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
+      - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
+      - SERVER_PORT=${APP_PORT:-8080}
+    ports:
+      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
+    networks:
+      - novasmart_net
+
+    depends_on:
+      db:
+        condition: service_healthy
+  frontend:
+    build:
+      context: ./Frontend
+      dockerfile: Dockerfile.dev # Usamos el entorno de desarrollo para Compose
+    container_name: novasmart_frontend
+    environment:
+      - VITE_API_URL=http://localhost:${APP_PORT:-8080}
+    ports:
+      - "${FRONTEND_PORT:-5173}:${FRONTEND_PORT:-5173}"
+    volumes:
+      - ./Frontend:/app
+      - /app/node_modules # Evita sobreescribir los módulos de Node del contenedor
+    networks:
+      - novasmart_net
+
+networks:
+  novasmart_net:
+    driver: bridge
