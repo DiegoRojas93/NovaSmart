@@ -8,4 +8,11 @@ export default defineConfig({
     react(),
     babel({ presets: [reactCompilerPreset()] })
   ],
+  server: {
+    host: true, // Necesario para que Docker exponga el puerto
+    port: 5173, 
+    watch: {
+      usePolling: true, // 👈 Esta es la clave para que escuche cambios en Docker
+    }
+  }
 })
