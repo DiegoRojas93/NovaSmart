@@ -6,6 +6,7 @@ import com.NovaSmart.Backend.Repositories.UserRepository;
 import com.NovaSmart.Backend.Service.Interfaces.IUserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
@@ -23,6 +24,7 @@ public class UserService implements IUserInfoService {
     private final Validator validator;
 
     @Override
+    @Transactional
     public UserModel save(UserModel userModel) {
 
         // INSERT
@@ -36,8 +38,6 @@ public class UserService implements IUserInfoService {
 
             userModel.setDeleted_at(null);
 
-            // Temporalmente fijo
-            // userModel.setInstitution_id(null);
         }
 
         // UPDATE
@@ -60,21 +60,25 @@ public class UserService implements IUserInfoService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<UserModel> findById(Long id) {
         return userRepository.findById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserModel> findAll() {
         return userRepository.findAll();
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
         userRepository.deleteById(id);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<UserModel> findByUserById(Long id) {
         return List.of();
     }

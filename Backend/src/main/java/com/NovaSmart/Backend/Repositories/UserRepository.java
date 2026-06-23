@@ -60,11 +60,6 @@ public class UserRepository implements IUserRepository {
 
         if ( userModel.getId() == null ) {
 
-//            String query = "INSERT INTO users " +
-//                "(first_name, last_name, birthday, username, password_hash, status, created_at, updated_at, deleted_at, institution_id)" +
-//                " VALUES " +
-//                "(?,?,?,?,?,CAST(? AS user_status),?,?,?,?)";
-
             String query = "INSERT INTO users " +
                 "(first_name, last_name, birthday, username, password, is_Admin, status, created_at, updated_at, deleted_at, institution_id )" +
                 " VALUES " +
