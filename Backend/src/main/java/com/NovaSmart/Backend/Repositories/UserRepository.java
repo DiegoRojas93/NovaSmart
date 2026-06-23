@@ -4,6 +4,7 @@ import com.NovaSmart.Backend.Model.Enums.User_status;
 import com.NovaSmart.Backend.Model.UserModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IUserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -34,7 +35,6 @@ public class UserRepository implements IUserRepository {
 
         userModel.setUsername(rs.getString("username"));
         userModel.setPassword(rs.getString("password"));
-
         userModel.set_admin(rs.getBoolean("is_admin"));
 
         String statusStr = rs.getString("status");
@@ -50,7 +50,8 @@ public class UserRepository implements IUserRepository {
         userModel.setUpdated_at(updatedAt != null ? updatedAt.toLocalDateTime() : null);
         userModel.setDeleted_at(deletedAt != null ? deletedAt.toLocalDateTime() : null);
 
-        userModel.setInstitution_id(rs.getLong("admin_user_id"));
+        // CORRECCIÓN 1: Tu columna real de la tabla se llama "institution_id", no "admin_user_id"
+        userModel.setInstitution_id(rs.getLong("institution_id"));
 
         return userModel;
     };
@@ -60,8 +61,8 @@ public class UserRepository implements IUserRepository {
 
         if ( userModel.getId() == null ) {
 
-            String query = "INSERT INTO users " +
-                "(first_name, last_name, birthday, username, password, is_Admin, status, created_at, updated_at, deleted_at, institution_id )" +
+            String query = "INSERT INTO \"users\" " +
+                "(first_name, last_name, birthday, username, password, is_admin, status, created_at, updated_at, deleted_at, institution_id )" +
                 " VALUES " +
                 "(?,?,?,?,?,?,CAST(? AS user_status),?,?,?,?)";
 
@@ -72,17 +73,11 @@ public class UserRepository implements IUserRepository {
 
                 ps.setString(1, userModel.getFirst_name());
                 ps.setString(2, userModel.getLast_name());
-
                 ps.setDate(3, userModel.getDate() != null ? java.sql.Date.valueOf(userModel.getDate()) : null);
-
                 ps.setString(4, userModel.getUsername());
                 ps.setString(5, userModel.getPassword());
-
-                ps.setBoolean( 6, userModel.is_admin());
-
-                // Prevención de NullPointerException si no se seleccionó estado en el Frontend
+                ps.setBoolean(6, userModel.is_admin());
                 ps.setString(7, userModel.getStatus() != null ? userModel.getStatus().name() : null);
-
                 ps.setTimestamp(8, userModel.getCreated_at() != null ? Timestamp.valueOf(userModel.getCreated_at()) : null);
                 ps.setTimestamp(9, userModel.getUpdated_at() != null ? Timestamp.valueOf(userModel.getUpdated_at()) : null);
                 ps.setTimestamp(10, userModel.getDeleted_at() != null ? Timestamp.valueOf(userModel.getDeleted_at()) : null);
@@ -99,27 +94,23 @@ public class UserRepository implements IUserRepository {
             userModel.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
         } else {
-            String query = "UPDATE users SET " +
+
+            String query = "UPDATE \"users\" SET " +
                 "first_name = ?, last_name = ?, birthday = ?, username = ?, password = ?, is_admin = ?, status = CAST(? AS user_status), created_at = ?, updated_at = ?, deleted_at = ?, institution_id = ? " +
                 "WHERE id = ?";
 
-            System.out.println("ID institution user: " + userModel.getInstitution_id());
-
             jdbcTemplate.update( query,
-
                 userModel.getFirst_name(),
                 userModel.getLast_name(),
-                userModel.getDate(),
+                userModel.getDate() != null ? java.sql.Date.valueOf(userModel.getDate()) : null,
                 userModel.getUsername(),
                 userModel.getPassword(),
                 userModel.is_admin(),
                 userModel.getStatus() != null ? userModel.getStatus().name() : null,
-                userModel.getCreated_at(),
-                userModel.getUpdated_at(),
-                userModel.getDeleted_at(),
+                userModel.getCreated_at() != null ? Timestamp.valueOf(userModel.getCreated_at()) : null,
+                userModel.getUpdated_at() != null ? Timestamp.valueOf(userModel.getUpdated_at()) : null,
+                userModel.getDeleted_at() != null ? Timestamp.valueOf(userModel.getDeleted_at()) : null,
                 userModel.getInstitution_id(),
-
-
                 userModel.getId()
             );
         }
@@ -129,21 +120,29 @@ public class UserRepository implements IUserRepository {
 
     @Override
     public Optional<UserModel> findById(Long id) {
-        return Optional.empty();
+        String query = "SELECT * FROM \"users\" WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, userModelRowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override
     public List<UserModel> findAll() {
-        return List.of();
+        String query = "SELECT * FROM \"users\"";
+        return jdbcTemplate.query(query, userModelRowMapper);
     }
 
     @Override
     public void deleteById(Long id) {
-
+        String query = "DELETE FROM \"users\" WHERE id = ?";
+        jdbcTemplate.update(query, id);
     }
 
     @Override
     public List<UserModel> findByAdminUserById(Long id) {
-        return List.of();
+        String query = "SELECT * FROM \"users\" WHERE institution_id = ? LIMIT 1";
+        return jdbcTemplate.query(query, userModelRowMapper);
     }
 }

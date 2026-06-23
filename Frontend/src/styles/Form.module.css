@@ -1,0 +1,42 @@
+.form {
+  width: 40%;
+  /* height: 50%; */
+  max-height: fit-content;
+  border-radius: 25%;
+  padding: 25%;
+  
+  /* Fondo blanco con un 20% de opacidad */
+  background: rgba(255, 255, 255, 0.2);
+  background-color: rgb(76, 0, 109);
+
+  /* El efecto de desenfoque Gaussiano */
+  backdrop-filter: blur(10px); 
+  -webkit-backdrop-filter: blur(10px); /* Compatibilidad con Safari */
+  
+  /* Bordes y sombras opcionales para mejorar el contraste */
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 15px;
+  padding: 20px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.division {
+  width: 100%;
+  height: fit-content;
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.division label {
+  color: white;
+  width: 40%;
+  text-align: left;
+}
+
+.division input {
+  width: 40%;
+}
+
+.division select {
+  width: 40%;
+}
