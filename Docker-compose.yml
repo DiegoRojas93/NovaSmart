@@ -56,6 +56,8 @@ services:
       db:
         condition: service_healthy
   frontend:
+    depends_on:
+      - backend
     build:
       context: ./Frontend
       dockerfile: Dockerfile.dev # Usamos el entorno de desarrollo para Compose
