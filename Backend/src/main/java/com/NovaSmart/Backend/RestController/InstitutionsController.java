@@ -5,11 +5,14 @@ import com.NovaSmart.Backend.Model.InstitutionModel;
 import com.NovaSmart.Backend.Model.UserModel;
 import com.NovaSmart.Backend.Service.Interfaces.IInstitutionsInfoService;
 import com.NovaSmart.Backend.Service.Interfaces.IUserInfoService;
+import com.NovaSmart.Backend.Service.FileStorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -23,6 +26,7 @@ public class InstitutionsController {
 
     private final IUserInfoService userService;
 
+    private final FileStorageService fileStorageService;
 
     @GetMapping()
     public List<InstitutionModel> getAllInstitutions() {
@@ -40,31 +44,41 @@ public class InstitutionsController {
         }
     }
 
-    @PostMapping
-    public ResponseEntity<Map<String, Object>> createInstitution(@Valid @RequestBody InstitutionAndUserModel request ) {
-
-        // 1. Extraer los datos del request
+    // 1. IMPORTANTE: Indicar que consume MULTIPART_FORM_DATA
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<Map<String, Object>> createInstitution(
+        // 2. Cambiamos @RequestBody por @RequestPart("data")
+        @Valid @RequestPart("data") InstitutionAndUserModel request,
+        // 3. Añadimos los archivos (opcionales)
+        @RequestPart(value = "logo", required = false) MultipartFile logo,
+        @RequestPart(value = "banner", required = false) MultipartFile banner) {
 
         InstitutionModel institution = request.getInstitutionModel();
         UserModel user = request.getUserModel();
 
-        // 2. Guardar la institución primero
+        // 4. Guardar archivos si existen (Requiere que inyectes FileStorageService)
+        if (logo != null && !logo.isEmpty()) {
+            String logoFilename = fileStorageService.store(logo);
+            institution.setLogo(logoFilename);
+        }
+
+        if (banner != null && !banner.isEmpty()) {
+            String bannerFilename = fileStorageService.store(banner);
+            institution.setBanner(bannerFilename);
+        }
+
+        // 5. Lógica de guardado en base de datos
         InstitutionModel savedInstitution = institutionsInfoService.save(institution);
 
-        // 3. Asignar el ID de la institución recién creada al usuario
+        user.setInstitution_id(savedInstitution.getId());
+        UserModel savedUser = userService.save(user);
 
-        user.setInstitution_id( savedInstitution.getId() );
-
-        // 4. Guardar el usuario (Requiere tu UserService)
-        UserModel savedUser = userService.save( user );
-
-        // 5. Preparar la respuesta para el Frontend
+        // 6. Respuesta
         Map<String, Object> response = new HashMap<>();
-
         response.put("institution", savedInstitution);
         response.put("user", savedUser);
 
-        return new ResponseEntity<>( response, HttpStatus.CREATED );
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/id")

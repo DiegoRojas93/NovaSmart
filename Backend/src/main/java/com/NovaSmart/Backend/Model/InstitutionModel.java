@@ -34,6 +34,10 @@ public class InstitutionModel {
     @NotBlank(message = "La mision no puede estar vacio.")
     private String mission;
 
+    private String logo;
+
+    private String banner;
+
     @NotNull(message = "El estado es obligatorio.")
     private Institution_status status;
 

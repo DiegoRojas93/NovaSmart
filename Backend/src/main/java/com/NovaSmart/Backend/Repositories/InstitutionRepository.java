@@ -58,10 +58,16 @@ public class InstitutionRepository implements IInstitutionRepository {
     public InstitutionModel save(InstitutionModel institutionInfo) {
         if ( institutionInfo.getId() == null ) {
             // CORRECCIÓN 2: 12 columnas = 12 parámetros (?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?,?)
+
+//            String query = "INSERT INTO institutions " +
+//                "(nit, name, department, city, address, vision, mission, status, created_at, updated_at, deleted_at)" +
+//                " VALUES " +
+//                "(?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?)";
+
             String query = "INSERT INTO institutions " +
-                "(nit, name, department, city, address, vision, mission, status, created_at, updated_at, deleted_at)" +
+                "(nit, name, department, city, address, vision, mission, logo, banner, status, created_at, updated_at, deleted_at)" +
                 " VALUES " +
-                "(?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?)";
+                "(?,?,?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -77,12 +83,16 @@ public class InstitutionRepository implements IInstitutionRepository {
                 ps.setString(6, institutionInfo.getVision());
                 ps.setString(7, institutionInfo.getMission());
 
-                // Prevención de NullPointerException si no se seleccionó estado en el Frontend
-                ps.setString(8, institutionInfo.getStatus() != null ? institutionInfo.getStatus().name() : null);
+                // --- NUEVO: Insertar Logo y Banner ---
+                ps.setString(8, institutionInfo.getLogo());
+                ps.setString(9, institutionInfo.getBanner());
 
-                ps.setTimestamp(9, institutionInfo.getCreated_at() != null ? Timestamp.valueOf(institutionInfo.getCreated_at()) : null);
-                ps.setTimestamp(10, institutionInfo.getUpdated_at() != null ? Timestamp.valueOf(institutionInfo.getUpdated_at()) : null);
-                ps.setTimestamp(11, institutionInfo.getDeleted_at() != null ? Timestamp.valueOf(institutionInfo.getDeleted_at()) : null);
+                // Prevención de NullPointerException si no se seleccionó estado en el Frontend
+                ps.setString(10, institutionInfo.getStatus() != null ? institutionInfo.getStatus().name() : null);
+
+                ps.setTimestamp(11, institutionInfo.getCreated_at() != null ? Timestamp.valueOf(institutionInfo.getCreated_at()) : null);
+                ps.setTimestamp(12, institutionInfo.getUpdated_at() != null ? Timestamp.valueOf(institutionInfo.getUpdated_at()) : null);
+                ps.setTimestamp(13, institutionInfo.getDeleted_at() != null ? Timestamp.valueOf(institutionInfo.getDeleted_at()) : null);
 
                 return ps;
             }, keyHolder);
@@ -91,7 +101,7 @@ public class InstitutionRepository implements IInstitutionRepository {
 
         } else {
             String query = "UPDATE institutions SET " +
-                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
+                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo, banner, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
                 "WHERE id = ?";
 
             jdbcTemplate.update( query,
@@ -102,6 +112,10 @@ public class InstitutionRepository implements IInstitutionRepository {
                 institutionInfo.getAddress(),
                 institutionInfo.getVision(),
                 institutionInfo.getMission(),
+                // --- NUEVO: Valores para el UPDATE ---
+                institutionInfo.getLogo(),
+                institutionInfo.getBanner(),
+
                 institutionInfo.getStatus() != null ? institutionInfo.getStatus().name() : null,
                 institutionInfo.getCreated_at(),
                 institutionInfo.getUpdated_at(),

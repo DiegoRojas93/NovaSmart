@@ -4,17 +4,6 @@ import styles from './styles/Form.module.css';
 
 const Form = () => {
 
-  // const [formData, setFormData] = useState({
-  //   name: '',
-  //   nit: '',
-  //   department: '',
-  //   city: '',
-  //   address: '',
-  //   vision: '',
-  //   mission: '',
-  //   status: ''
-  // });
-
   const [formData, setFormData] = useState({
 
     user: {
@@ -38,18 +27,6 @@ const Form = () => {
       mission: ''
     }
   });
-
-  // Capturar cambios de inputs
-
-  // const handleChange = (e) => {
-
-  //   const { name, value } = e.target;
-
-  //   setFormData({
-  //     ...formData,
-  //     [name]: value
-  //   });
-  // };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -76,8 +53,6 @@ const Form = () => {
 
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-      console.log(`${ apiUrl }/institutions`)
-
       const response = await fetch(`${ apiUrl }/institutions`, {
         method: 'POST',
 
@@ -98,18 +73,6 @@ const Form = () => {
 
       alert('Institución creada correctamente');
 
-      // Limpiar formulario
-
-      // setFormData({
-      //   name: '',
-      //   nit: '',
-      //   department: '',
-      //   city: '',
-      //   address: '',
-      //   vision: '',
-      //   mission: '',
-      //   status: ''
-      // });
 
       setFormData({
 
