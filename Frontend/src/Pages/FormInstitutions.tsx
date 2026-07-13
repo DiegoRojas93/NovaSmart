@@ -168,10 +168,12 @@ export const FormInstitutions = () => {
 
       setLogoFile(null);
       setBannerFile(null);
+      
       if (logoInputRef.current) logoInputRef.current.value = "";
       if (bannerInputRef.current) bannerInputRef.current.value = "";
 
-      navigate('/user', { replace: true })
+
+      navigate(`/instittution/${ data.institution.id }`, { replace: true })
 
     } catch (error) {
       console.error(error);

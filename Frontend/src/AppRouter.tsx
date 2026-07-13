@@ -18,12 +18,13 @@ export const AppRouter = () => {
 
         </Route>
 
-        <Route path="/user" element={
+        <Route path="/instittution" element={
           <Suspense fallback={<div>Loading...</div>}>
             <Layout />
           </Suspense>
         }>
-          <Route index element={ <User /> } />
+
+          <Route path=":institutionId" element={ <User /> } />
         </Route>
         
         <Route path="/" element={ <Navigate to="/Home" />} />

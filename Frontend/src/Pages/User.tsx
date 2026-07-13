@@ -1,24 +1,27 @@
 import { useState, useEffect } from "react";
+import { useParams } from "react-router";
 
 const User = () => {
   // 1. Estado para guardar los datos de la institución
+
   const [institution, setInstitution] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   // 2. Obtener la URL base de tu API
+
   const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
+  const { institutionId } = useParams();
+
   useEffect(() => {
+
     // 3. Función para obtener los datos del backend
+    
     const fetchInstitution = async () => {
       try {
-        // Aquí debes apuntar al ID de la institución que quieres cargar.
-        // En un caso real con react-router, tomarías el ID de la URL (ej: /institutions/:id)
-        // Por ahora, pondremos un "1" de ejemplo.
-        const institutionId = 1; 
         
-        const response = await fetch(`${apiUrl}/institutions/${institutionId}`);
+        const response = await fetch(`${apiUrl}/institutions/${ institutionId }`);
         
         if (!response.ok) {
           throw new Error("No se pudo cargar la información de la institución");
