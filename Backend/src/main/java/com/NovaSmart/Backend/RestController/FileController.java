@@ -27,7 +27,7 @@ public class FileController {
         try {
             contentType = Files.probeContentType(file.getFile().toPath());
         } catch (IOException e) {
-            // Ignorar y usar el default
+            System.out.println("Error: " + e.getMessage() );
         }
 
         return ResponseEntity.ok()

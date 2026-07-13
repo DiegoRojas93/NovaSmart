@@ -1,12 +1,35 @@
-import { useState, useRef } from "react";
+import { useState, useRef, type ChangeEvent } from "react";
 
 import bannerForm from '../assets/Banner Form.jpg'
 import { replace, useNavigate } from "react-router";
 
+interface FormData {
+  user: {
+    first_name: string;
+    last_name: string;
+    date: string;
+    username: string;
+    password: string;
+    is_admin: boolean;
+    status: string;
+  };
+  institution: {
+    name: string;
+    nit: string;
+    department: string;
+    city: string;
+    address: string;
+    status: string;
+    vision: string;
+    mission: string;
+  };
+}
+
 export const FormInstitutions = () => {
 
   // 1. Estados para los datos de texto
-  const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState<FormData>({
     user: {
       first_name: '',
       last_name: '',
@@ -29,16 +52,21 @@ export const FormInstitutions = () => {
   });
 
   // 2. Referencias para los inputs de archivo (útil para limpiarlos después)
-  const logoInputRef = useRef(null);
-  const bannerInputRef = useRef(null);
-  
-  // 3. Estados para guardar los archivos seleccionados
-  const [logoFile, setLogoFile] = useState(null);
-  const [bannerFile, setBannerFile] = useState(null);
 
-  const handleChange = (e) => {
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const bannerInputRef = useRef<HTMLInputElement>(null);
+
+  // 3. Manejador de inputs de texto
+
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    const [parent, child] = name.split(".");
+    
+    type ParentKey = "user" | "institution";
+
+    const [parent, child] = name.split(".") as [
+      ParentKey,
+      string
+    ];
 
     setFormData(prev => ({
       ...prev,
@@ -49,16 +77,48 @@ export const FormInstitutions = () => {
     }));
   };
 
-  const handleFileChange = (e) => {
+  // 4. Manejador de selectores
+
+  const selectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+
+    type ParentKey = "user" | "institution";
+
+    const [parent, child] = name.split(".") as [
+      ParentKey,
+      string
+    ];
+
+    setFormData(prev => ({
+      ...prev,
+      [parent]: {
+        ...prev[parent],
+        [child]: value
+      }
+    }));
+  };
+
+  // 5. Estados para guardar los archivos seleccionados
+  
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [bannerFile, setBannerFile] = useState<File | null>(null);
+
+  // 6. Manejador de selectores
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, files } = e.target;
+    if (!files?.length) return;
     if (name === 'logo') setLogoFile(files[0]);
     if (name === 'banner') setBannerFile(files[0]);
   };
 
+  // 7. Navigate lo traemos para poder redirigir al usuario a su cuenta creada
+
   const navigate = useNavigate();
 
-  // Enviar formulario
-  const handleSubmit = async (e) => {
+  // 8. Enviar formulario
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -213,7 +273,7 @@ export const FormInstitutions = () => {
                 name="user.status"
                 className="flex-1"
                 value={formData.user.status}
-                onChange={handleChange}
+                onChange={selectChange}
               >
                 <option value="">Seleccione un estado</option>
                 <option value="ACTIVO">Activo</option>
@@ -335,7 +395,7 @@ export const FormInstitutions = () => {
                 name="institution.status"
                 className="flex-1"
                 value={formData.institution.status}
-                onChange={handleChange}
+                onChange={selectChange}
               >
                 <option value="">Seleccione un estado</option>
                 <option value="ACTIVA">Activa</option>

@@ -1,74 +1,131 @@
 @import "tailwindcss";
 
 /* =========================
-   Darkmode
+   Darkmode: Uso Normal (Default)
+
+   Referencia: https://www.behance.net/gallery/177351365/Mangrove-Branding-Website?utm_source=Pinterest&utm_medium=organic
 ========================== */
+
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme {
 
-   /* Backgrounds */
+   /* Brand: Primary colors */
+   --color-brand-primary-1: #021b1a; /* Ideal para fondo principal (Background App) */
+   --color-brand-primary-2: #032221; /* Ideal para tarjetas o modales (Surface) */
+   --color-brand-primary-3: #03624c;
+   --color-brand-primary-4: #2cc295;
+   --color-brand-primary-5: #00df82; /* Color de acento / Botones principales */
+   --color-brand-primary-6: #f1f7f6; /* Ideal para textos principales en dark mode */
 
-   --color-background-dark: #000e09;
-   --color-background-light: #d8f3dc;
+   /* Brand: Secondary colors */
+   --color-brand-secundary-1: #06302b;
+   --color-brand-secundary-2: #0b453a;
+   --color-brand-secundary-3: #095545;
+   --color-brand-secundary-4: #17876d;
+   --color-brand-secundary-5: #2fa98d;
+   --color-brand-secundary-6: #707d7d;
+   --color-brand-secundary-7: #aacbc4; /* Ideal para textos secundarios/mutados */
 
-   --color-surface: #081c15;
-   --color-surface-hover: #1b4332;
+   /* Invertimos la lógica para fondos claros */
+    --color-bg-app: var(--color-brand-primary-6);
+    --color-bg-surface: #ffffff;
 
-   /* Brand */
+   /* Gradients */
 
-   --color-brand-dark: #2d6a4f;
-   --color-brand: #52b788;
-   --color-brand-light: #95d5b2;
-   --color-brand-soft: #d8f3dc;
+   --background-image-main-glow:
+      radial-gradient(
+         circle at center,
+         var(--color-brand-primary-3) 0%,   /* Centro: Verde esmeralda medio (Foco de luz) */
+         var(--color-brand-primary-2) 35%,  /* Transición: Verde oscuro (Suaviza el corte) */
+         var(--color-brand-primary-1) 50%  /* Exterior: El color de fondo más oscuro de la app */
+      );
 
-   /* Typography */
-
-   --color-primary-tx: #f8fafc;
-   --color-secondary-tx: #cbd5e1;
-   --color-muted-tx: #94a3b8;
-   --color-disabled-tx: #64748b;
+   /* UX/UI: Semantic Backgrounds */
+   --color-bg-app: var(--color-brand-primary-1);
+   --color-bg-surface: var(--color-brand-primary-2);
 
    /* Borders */
+   --color-border-subtle: var(--color-brand-secundary-1);
+   --color-border-strong: var(--color-brand-secundary-2);
 
-   --color-rd: #2d6a4f;
+   /* Status (Ajustados para contrastar sobre fondos oscuros) */
+   --color-status-success: #10b981; /* Verde esmeralda claro (o puedes reusar primary-5) */
+   --color-status-warning: #fbbf24; /* Ámbar cálido, contrasta perfecto con tus verdes */
+   --color-status-danger:  #f87171; /* Rojo coral suave para no deslumbrar en la oscuridad */
+   --color-status-info:    #38bdf8; /* Cyan/Celeste para mantener la armonía fría del tema */
 
-   /* Status */
+   /* Typography: Colors */
+   --color-heading-text : #ffffff; /* Blanco puro para máxima jerarquía en Títulos */
+   --color-base-text: var(--color-brand-primary-6); /* Párrafos normales */
+   --color-muted-text: var(--color-brand-secundary-7); /* Textos secundarios o placeholders */
 
-   --color-success: #2FBF71;
-   --color-warning: #D4A017;
-   --color-danger: #C0392B;
-   --color-info: #168AAD;
+   /* Typography: Sizes (Escala armónica base) */
+   --text-xs: 0.75rem;     /* 12px - Etiquetas, hints */
+   --text-sm: 0.875rem;    /* 14px - Metadatos, botones secundarios */
+   --text-base: 1rem;      /* 16px - Párrafos por defecto */
+   --text-lg: 1.125rem;    /* 18px - Subtítulos pequeños */
+   --text-xl: 1.25rem;     /* 20px - Títulos de tarjetas */
+   --text-2xl: 1.5rem;     /* 24px - Encabezados de sección (H2) */
+   --text-3xl: 1.875rem;   /* 30px - Encabezados principales (H1) */
+   --text-4xl: 2.25rem;    /* 36px - Hero banners o números grandes */
 
    /* Effects */
-
-   --shadow-card:
-      0 4px 12px rgb(0 0 0 / 0.35);
-
-   --shadow-modal:
-      0 12px 32px rgb(0 0 0 / 0.50);
+   --shadow-card: 0 4px 12px rgb(0 0 0 / 0.35);
+   --shadow-modal: 0 12px 32px rgb(0 0 0 / 0.50);
 }
 
 /* =========================
-   lithmode
+   Lightmode
 ========================== */
 
 @layer base {
-
   .light {
 
-  }
+    /* Invertimos la lógica para fondos claros */
+    --color-bg-app: var(--color-brand-primary-2);
+    --color-bg-surface: var(--color-brand-primary-1);
 
+   /* Gradients */
+
+   --background-image-main-glow:
+       radial-gradient(
+          circle at center,
+          rgb(44 194 149 / 0.12) 0%,     /* Centro: Tu verde primary-4 con 12% de opacidad (un destello sutil) */
+          #ffffff 25%,                   /* Transición: Blanco puro para limpiar el diseño y dar luz */
+          var(--color-brand-secundary-7) 50% /* Exterior: Se fusiona invisiblemente con el fondo de tu app (#f1f7f6) */
+       );
+
+    /* Bordes más oscuros para generar contraste en modo claro */
+    --color-border-subtle: var(--color-brand-secundary-7);
+    --color-border-strong: var(--color-brand-secundary-5);
+
+    /* Textos invertidos para legibilidad */
+    --color-heading-text: var(--color-brand-primary-1);
+    --color-base-text: var(--color-brand-primary-2);
+    --color-muted-text: var(--color-brand-secundary-6);
+
+    /* Status (Colores ligeramente más oscuros/saturados para fondos blancos) */
+    --color-status-success: #059669;
+    --color-status-warning: #d97706;
+    --color-status-danger:  #dc2626;
+    --color-status-info:    #0284c7;
+
+    /* Sombras más suaves, ya que en light mode la luz es más brillante */
+    --shadow-card: 0 4px 12px rgb(0 0 0 / 0.08);
+    --shadow-modal: 0 12px 32px rgb(0 0 0 / 0.15);
+  }
 }
 
 /* =========================
    Radius
 ========================== */
 
-h1{
+/* h1{
    color: var(--color-warning)
-}
+} */
 
-label {
+/* label {
    color: var(background-dark)
 }
 
@@ -90,4 +147,4 @@ input::placeholder {
 
 select::placeholder {
   color: var(--color-disabled-tx);
-}
+} */

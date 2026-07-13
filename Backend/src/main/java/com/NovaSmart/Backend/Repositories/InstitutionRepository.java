@@ -37,6 +37,9 @@ public class InstitutionRepository implements IInstitutionRepository {
         institutionModel.setVision(rs.getString("vision"));
         institutionModel.setMission(rs.getString("mission"));
 
+        institutionModel.setLogo(rs.getString("logo"));
+        institutionModel.setBanner(rs.getString("banner"));
+
         // Manejo seguro del Enum por si viene nulo desde la base de datos
         String statusStr = rs.getString("status");
         if (statusStr != null) {
@@ -57,12 +60,6 @@ public class InstitutionRepository implements IInstitutionRepository {
     @Override
     public InstitutionModel save(InstitutionModel institutionInfo) {
         if ( institutionInfo.getId() == null ) {
-            // CORRECCIÓN 2: 12 columnas = 12 parámetros (?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?,?)
-
-//            String query = "INSERT INTO institutions " +
-//                "(nit, name, department, city, address, vision, mission, status, created_at, updated_at, deleted_at)" +
-//                " VALUES " +
-//                "(?,?,?,?,?,?,?,CAST(? AS institution_status),?,?,?)";
 
             String query = "INSERT INTO institutions " +
                 "(nit, name, department, city, address, vision, mission, logo, banner, status, created_at, updated_at, deleted_at)" +
