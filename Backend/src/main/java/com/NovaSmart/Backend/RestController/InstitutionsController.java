@@ -5,7 +5,7 @@ import com.NovaSmart.Backend.Model.InstitutionModel;
 import com.NovaSmart.Backend.Model.UserModel;
 import com.NovaSmart.Backend.Service.Interfaces.IInstitutionsInfoService;
 import com.NovaSmart.Backend.Service.Interfaces.IUserInfoService;
-import com.NovaSmart.Backend.Service.FileStorageService;
+import com.NovaSmart.Backend.Utils.FileStorageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

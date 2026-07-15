@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Service;
+package com.NovaSmart.Backend.Utils;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;

@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.RestController;
 
-import com.NovaSmart.Backend.Service.FileStorageService;
+import com.NovaSmart.Backend.Utils.FileStorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
