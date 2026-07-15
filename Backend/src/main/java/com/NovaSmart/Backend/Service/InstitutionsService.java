@@ -30,20 +30,20 @@ public class InstitutionsService implements IInstitutionsInfoService {
         // INSERT
         if (institutionInfo.getId() == null) {
 
-            institutionInfo.setCreated_at(
+            institutionInfo.setCreatedAt(
                     LocalDateTime.now()
             );
 
-            institutionInfo.setUpdated_at(null);
+            institutionInfo.setUpdatedAt(null);
 
-            institutionInfo.setDeleted_at(null);
+            institutionInfo.setDeletedAt(null);
 
         }
 
         // UPDATE
         else {
 
-            institutionInfo.setUpdated_at( LocalDateTime.now() );
+            institutionInfo.setUpdatedAt( LocalDateTime.now() );
         }
 
         // Validaciones

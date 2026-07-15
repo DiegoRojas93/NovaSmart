@@ -5,9 +5,9 @@ import { replace, useNavigate } from "react-router";
 
 interface FormData {
   user: {
-    first_name: string;
-    last_name: string;
-    date: string;
+    firstName: string;
+    lastName: string;
+    birthday: string;
     username: string;
     password: string;
     is_admin: boolean;
@@ -31,9 +31,9 @@ export const FormInstitutions = () => {
 
   const [formData, setFormData] = useState<FormData>({
     user: {
-      first_name: '',
-      last_name: '',
-      date: '',
+      firstName: '',
+      lastName: '',
+      birthday: '',
       username: '',
       password: '',
       is_admin: true,
@@ -53,8 +53,9 @@ export const FormInstitutions = () => {
 
   // 2. Referencias para los inputs de archivo (útil para limpiarlos después)
 
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const bannerInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null),
+    bannerInputRef = useRef<HTMLInputElement>(null),
+    photoInputRef = useRef<HTMLInputElement>(null);
 
   // 3. Manejador de inputs de texto
 
@@ -100,8 +101,9 @@ export const FormInstitutions = () => {
 
   // 5. Estados para guardar los archivos seleccionados
   
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const [ logoFile, setLogoFile ] = useState<File | null>(null),
+    [ bannerFile, setBannerFile ] = useState<File | null>(null),
+    [ photoFile, setPhotoFile ] = useState<File | null>(null);
 
   // 6. Manejador de selectores
 
@@ -110,6 +112,7 @@ export const FormInstitutions = () => {
     if (!files?.length) return;
     if (name === 'logo') setLogoFile(files[0]);
     if (name === 'banner') setBannerFile(files[0]);
+    if (name === 'photo') setPhotoFile(files[0]);
   };
 
   // 7. Navigate lo traemos para poder redirigir al usuario a su cuenta creada
@@ -134,11 +137,17 @@ export const FormInstitutions = () => {
       );
 
       // Adjuntamos los archivos si el usuario los seleccionó
+
       if (logoFile) {
         dataToSend.append("logo", logoFile);
       }
+
       if (bannerFile) {
         dataToSend.append("banner", bannerFile);
+      }
+
+      if (photoFile) {
+        dataToSend.append("photo", photoFile);
       }
 
       const response = await fetch(`${ apiUrl }/institutions`, {
@@ -159,7 +168,7 @@ export const FormInstitutions = () => {
       // 5. Limpiar el formulario
       setFormData({
         user: {
-          first_name: '', last_name: '', date: '', username: '', password: '', is_admin: true, status: ''
+          firstName: '', lastName: '', birthday: '', username: '', password: '', is_admin: true, status: ''
         },
         institution: {
           name: '', nit: '', department: '', city: '', address: '', status: '', vision: '', mission: ''
@@ -168,9 +177,11 @@ export const FormInstitutions = () => {
 
       setLogoFile(null);
       setBannerFile(null);
+      setPhotoFile(null);
       
       if (logoInputRef.current) logoInputRef.current.value = "";
       if (bannerInputRef.current) bannerInputRef.current.value = "";
+      if (photoInputRef.current) photoInputRef.current.value = "";
 
 
       navigate(`/instittution/${ data.institution.id }`, { replace: true })
@@ -200,41 +211,41 @@ export const FormInstitutions = () => {
           <div className="w-full flex-col justify-around items-center">
 
             <div className="flex justify-between">
-              <label htmlFor="first_name" className="flex-1">Nombre:</label>
+              <label htmlFor="firstName" className="flex-1">Nombre:</label>
               <input
                 type="text"
-                id="first_name"
-                name="user.first_name"
+                id="firstName"
+                name="user.firstName"
                 placeholder="Ej: Diego Fernando"
                 className="flex-1"
-                value={formData.user.first_name}
+                value={formData.user.firstName}
                 onChange={handleChange}
               />
             </div>
             <br />
 
             <div className="flex justify-between">
-              <label htmlFor="last_name" className="flex-1">Apellido:</label>
+              <label htmlFor="lastName" className="flex-1">Apellido:</label>
               <input
                 type="text"
-                id="last_name"
-                name="user.last_name"
+                id="lastName"
+                name="user.lastName"
                 placeholder="Ej: Rojas Quintero"
                 className="flex-1"
-                value={formData.user.last_name}
+                value={formData.user.lastName}
                 onChange={handleChange}
               />
             </div>
             <br />
 
             <div className="flex justify-between">
-              <label htmlFor="date" className="flex-1">Fecha de nacimiento:</label>
+              <label htmlFor="birthday" className="flex-1">Fecha de nacimiento:</label>
               <input
                 type="date"
-                id="date"
-                name="user.date"
+                id="birthday"
+                name="user.birthday"
                 className="flex-1"
-                value={formData.user.date}
+                value={formData.user.birthday}
                 onChange={handleChange}
               />
             </div>
@@ -280,6 +291,21 @@ export const FormInstitutions = () => {
                 <option value="">Seleccione un estado</option>
                 <option value="ACTIVO">Activo</option>
               </select>
+            </div>
+
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="photo" className="flex-1">Foto del usuario:</label>
+              <input 
+                type="file" 
+                id="photo" 
+                name="photo" 
+                accept="image/*" 
+                className="flex-1"
+                ref={photoInputRef}
+                onChange={handleFileChange} 
+              />
             </div>
           </div>
 

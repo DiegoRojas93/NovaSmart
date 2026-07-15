@@ -30,20 +30,20 @@ public class UserService implements IUserInfoService {
         // INSERT
         if (userModel.getId() == null) {
 
-            userModel.setCreated_at(
+            userModel.setCreatedAt(
                 LocalDateTime.now()
             );
 
-            userModel.setUpdated_at(null);
+            userModel.setUpdatedAt(null);
 
-            userModel.setDeleted_at(null);
+            userModel.setDeletedAt(null);
 
         }
 
         // UPDATE
         else {
 
-            userModel.setUpdated_at( LocalDateTime.now() );
+            userModel.setUpdatedAt( LocalDateTime.now() );
         }
 
         // Validaciones

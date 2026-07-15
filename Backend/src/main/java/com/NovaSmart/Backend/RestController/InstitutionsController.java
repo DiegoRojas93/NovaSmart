@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.RestController;
 
-import com.NovaSmart.Backend.Model.InstitutionAndUserModel;
+import com.NovaSmart.Backend.Model.Combinations.InstitutionAndUserModel;
 import com.NovaSmart.Backend.Model.InstitutionModel;
 import com.NovaSmart.Backend.Model.UserModel;
 import com.NovaSmart.Backend.Service.Interfaces.IInstitutionsInfoService;
@@ -51,7 +51,9 @@ public class InstitutionsController {
         @Valid @RequestPart("data") InstitutionAndUserModel request,
         // 3. Añadimos los archivos (opcionales)
         @RequestPart(value = "logo", required = false) MultipartFile logo,
-        @RequestPart(value = "banner", required = false) MultipartFile banner) {
+        @RequestPart(value = "banner", required = false) MultipartFile banner,
+        @RequestPart(value = "photo", required = false) MultipartFile photo
+        ) {
 
         InstitutionModel institution = request.getInstitutionModel();
         UserModel user = request.getUserModel();
@@ -67,10 +69,15 @@ public class InstitutionsController {
             institution.setBanner(bannerFilename);
         }
 
+        if (photo != null && !photo.isEmpty()) {
+            String bannerFilename = fileStorageService.store(photo);
+            user.setPhoto(bannerFilename);
+        }
+
         // 5. Lógica de guardado en base de datos
         InstitutionModel savedInstitution = institutionsInfoService.save(institution);
 
-        user.setInstitution_id(savedInstitution.getId());
+        user.setInstitutionId(savedInstitution.getId());
         UserModel savedUser = userService.save(user);
 
         // 6. Respuesta

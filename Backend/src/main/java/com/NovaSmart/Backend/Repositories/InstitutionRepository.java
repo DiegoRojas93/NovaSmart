@@ -50,9 +50,9 @@ public class InstitutionRepository implements IInstitutionRepository {
         Timestamp updatedAt = rs.getTimestamp("updated_at");
         Timestamp deletedAt = rs.getTimestamp("deleted_at");
 
-        institutionModel.setCreated_at(createdAt != null ? createdAt.toLocalDateTime() : null);
-        institutionModel.setUpdated_at(updatedAt != null ? updatedAt.toLocalDateTime() : null);
-        institutionModel.setDeleted_at(deletedAt != null ? deletedAt.toLocalDateTime() : null);
+        institutionModel.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
+        institutionModel.setUpdatedAt(updatedAt != null ? updatedAt.toLocalDateTime() : null);
+        institutionModel.setDeletedAt(deletedAt != null ? deletedAt.toLocalDateTime() : null);
 
         return institutionModel;
     };
@@ -87,9 +87,9 @@ public class InstitutionRepository implements IInstitutionRepository {
                 // Prevención de NullPointerException si no se seleccionó estado en el Frontend
                 ps.setString(10, institutionInfo.getStatus() != null ? institutionInfo.getStatus().name() : null);
 
-                ps.setTimestamp(11, institutionInfo.getCreated_at() != null ? Timestamp.valueOf(institutionInfo.getCreated_at()) : null);
-                ps.setTimestamp(12, institutionInfo.getUpdated_at() != null ? Timestamp.valueOf(institutionInfo.getUpdated_at()) : null);
-                ps.setTimestamp(13, institutionInfo.getDeleted_at() != null ? Timestamp.valueOf(institutionInfo.getDeleted_at()) : null);
+                ps.setTimestamp(11, institutionInfo.getCreatedAt() != null ? Timestamp.valueOf(institutionInfo.getCreatedAt()) : null);
+                ps.setTimestamp(12, institutionInfo.getUpdatedAt() != null ? Timestamp.valueOf(institutionInfo.getUpdatedAt()) : null);
+                ps.setTimestamp(13, institutionInfo.getDeletedAt() != null ? Timestamp.valueOf(institutionInfo.getDeletedAt()) : null);
 
                 return ps;
             }, keyHolder);
@@ -114,9 +114,9 @@ public class InstitutionRepository implements IInstitutionRepository {
                 institutionInfo.getBanner(),
 
                 institutionInfo.getStatus() != null ? institutionInfo.getStatus().name() : null,
-                institutionInfo.getCreated_at(),
-                institutionInfo.getUpdated_at(),
-                institutionInfo.getDeleted_at(),
+                institutionInfo.getCreatedAt(),
+                institutionInfo.getUpdatedAt(),
+                institutionInfo.getDeletedAt(),
                 // CORRECCIÓN 3: Faltaba pasar el ID para el WHERE
                 institutionInfo.getId()
             );
