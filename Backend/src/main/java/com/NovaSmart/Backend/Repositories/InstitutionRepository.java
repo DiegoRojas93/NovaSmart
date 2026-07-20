@@ -97,8 +97,12 @@ public class InstitutionRepository implements IInstitutionRepository {
             institutionInfo.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
         } else {
+//            String query = "UPDATE institutions SET " +
+//                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo, banner, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
+//                "WHERE id = ?";
+
             String query = "UPDATE institutions SET " +
-                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo, banner, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
+                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo = ?, banner = ?, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
                 "WHERE id = ?";
 
             jdbcTemplate.update( query,

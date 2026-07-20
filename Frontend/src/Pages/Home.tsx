@@ -50,7 +50,7 @@ const Home = () => {
             </p>
             <div className="flex flex-wrap justify-center gap-4">
               <Link
-                to="/register"
+                to="/Login"
                 className="text-base-text px-6 py-3 rounded-md hover:bg-brand-primary-600 transition">
                   Inicia sesión
               </Link>

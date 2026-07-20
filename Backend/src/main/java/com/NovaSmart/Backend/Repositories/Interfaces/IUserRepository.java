@@ -15,4 +15,6 @@ public interface IUserRepository {
     void deleteById(Long id);
 
     List<UserModel> findByAdminUserById(Long id);
+
+    Optional<UserModel> findByUsername(String username);
 }

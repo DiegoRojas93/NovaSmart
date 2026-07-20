@@ -151,4 +151,16 @@ public class UserRepository implements IUserRepository {
         String query = "SELECT * FROM \"users\" WHERE institution_id = ? LIMIT 1";
         return jdbcTemplate.query(query, userModelRowMapper);
     }
+
+    @Override
+    public Optional<UserModel> findByUsername(String username) {
+        String query = "SELECT * FROM users WHERE username = ?";
+        try {
+            // Ejecuta la consulta buscando exactamente ese username
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, userModelRowMapper, username));
+        } catch (EmptyResultDataAccessException e) {
+            // Si no encuentra a nadie, retorna un Optional vacío (es lo que Spring Security espera para lanzar la excepción UsernameNotFound)
+            return Optional.empty();
+        }
+    }
 }

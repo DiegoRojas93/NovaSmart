@@ -1,9 +1,7 @@
 package com.NovaSmart.Backend.Service.Components;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
-import com.NovaSmart.Backend.Model.Combinations.InstitutionAndUserModel;
 import com.NovaSmart.Backend.Model.Components.InstitutionModel;
-import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IInstitutionRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IInstitutionsInfoService;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IUserInfoService;
@@ -14,12 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service

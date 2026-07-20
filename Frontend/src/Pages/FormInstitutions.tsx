@@ -162,7 +162,7 @@ export const FormInstitutions = () => {
       }
 
       const data = await response.json();
-      // console.log('Institución creada:', data);
+      console.log('Institución creada:', data);
       // alert('Institución creada correctamente');
 
       // 5. Limpiar el formulario
@@ -184,7 +184,7 @@ export const FormInstitutions = () => {
       if (photoInputRef.current) photoInputRef.current.value = "";
 
 
-      navigate(`/instittution/${ data.institution.id }`, { replace: true })
+      navigate(`/Login`, { replace: true })
 
     } catch (error) {
       console.error(error);

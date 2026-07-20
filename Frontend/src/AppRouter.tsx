@@ -5,6 +5,7 @@ import PageNotFound from "./Pages/PageNotFound";
 // import Layout from "./Pages/Layout";
 import { lazy, Suspense } from "react";
 import User from "./Pages/User";
+import { Login } from "./Pages/Login";
 
 const Layout = lazy(() => import("./Pages/Layout"))
 
@@ -15,16 +16,16 @@ export const AppRouter = () => {
         <Route path="/" element={<Layout />} >
           <Route index element={ <Home /> } />
           <Route path="/Home/Register" element={ <FormInstitutions /> } />
-
+          <Route path="/Login" element={ <Login /> } />
         </Route>
 
-        <Route path="/instittution" element={
+        {/* 👇 AQUÍ ESTÁ EL CAMBIO: Reemplazamos "/User" por "/institution/:institutionId" */}
+        <Route path="/institution/:institutionId" element={
           <Suspense fallback={<div>Loading...</div>}>
             <Layout />
           </Suspense>
         }>
-
-          <Route path=":institutionId" element={ <User /> } />
+          <Route path="" element={ <User /> } />
         </Route>
         
         <Route path="/" element={ <Navigate to="/Home" />} />

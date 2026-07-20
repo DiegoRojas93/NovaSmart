@@ -5,14 +5,17 @@ import jakarta.validation.constraints.*;
 import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.*;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.*;
+import java.util.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Table("users") // Mapea a la tabla 'users'
-public class UserModel {
+public class UserModel implements UserDetails {
     @Id
     private Long id;
 
@@ -54,4 +57,30 @@ public class UserModel {
 
     @Column("institution_id")
     private Long institutionId;
+
+    @Override
+    public Collection getAuthorities() {
+        // Por ahora le daremos un rol genérico. Más adelante lo conectaremos con tu tabla user_roles
+        return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return this.username; // Asegúrate de que retorne el campo con el que inician sesión
+    }
+
+    @Override
+    public boolean isAccountNonExpired() { return true; }
+
+    @Override
+    public boolean isAccountNonLocked() { return true; }
+
+    @Override
+    public boolean isCredentialsNonExpired() { return true; }
+
+    @Override
+    public boolean isEnabled() {
+        // Si tienes un campo status, podrías hacer: return "ACTIVO".equals(this.status);
+        return true;
+    }
 }

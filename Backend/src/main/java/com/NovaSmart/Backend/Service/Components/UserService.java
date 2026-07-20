@@ -5,6 +5,7 @@ import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.NovaSmart.Backend.Repositories.UserRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IUserInfoService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -23,12 +24,16 @@ public class UserService implements IUserInfoService {
 
     private final Validator validator;
 
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public UserModel save(UserModel userModel) {
 
         // INSERT
         if (userModel.getId() == null) {
+
+            userModel.setPassword(passwordEncoder.encode(userModel.getPassword()));
 
             userModel.setCreatedAt(
                 LocalDateTime.now()

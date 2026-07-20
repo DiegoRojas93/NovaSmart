@@ -21,8 +21,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class InstittutionInscription implements IInstitutionInscription {
 
-    private final IInstitutionRepository institutionRepository;
-
     private final InstitutionsService institutionsService;
     private final IUserInfoService userService;
     private final FileStorageService fileStorageService;
@@ -35,7 +33,7 @@ public class InstittutionInscription implements IInstitutionInscription {
         MultipartFile banner,
         MultipartFile photo) {
 
-        // OJO AQUÍ: Asegúrate de que los métodos get coincidan con tu clase Java
+
         InstitutionModel institution = request.getInstitutionModel();
         UserModel user = request.getUserModel();
 

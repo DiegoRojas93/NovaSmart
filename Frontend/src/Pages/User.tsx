@@ -20,10 +20,20 @@ const User = () => {
     
     const fetchInstitution = async () => {
       try {
-        
-        const response = await fetch(`${apiUrl}/institutions/${ institutionId }`);
+        // 1. Recuperamos el token que guardaste exitosamente en el Login
+        const token = localStorage.getItem("token");
+
+        // 2. Añadimos el token a la petición
+        const response = await fetch(`${apiUrl}/institutions/${ institutionId }`, {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`, // <--- ¡LA LLAVE MÁGICA!
+            "Content-Type": "application/json"
+          }
+        });
         
         if (!response.ok) {
+          // Si el token expiró o es inválido, el backend lanzará un error 401 o 403
           throw new Error("No se pudo cargar la información de la institución");
         }
         

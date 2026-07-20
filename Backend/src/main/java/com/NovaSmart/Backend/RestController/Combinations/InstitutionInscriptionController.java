@@ -29,6 +29,8 @@ public class InstitutionInscriptionController {
         @RequestPart(value = "banner", required = false) MultipartFile banner,
         @RequestPart(value = "photo", required = false) MultipartFile photo
     ) {
+        // 🔥 AÑADE ESTO: Si este mensaje aparece en Docker, significa que CORS funcionó perfecto
+        System.out.println("¡LA PETICIÓN LLEGÓ AL CONTROLADOR! Procesando...");
 
         Map<String, Object> response = institutionInscription.registerInstitutionWithAdmin(request, logo, banner, photo);
 
