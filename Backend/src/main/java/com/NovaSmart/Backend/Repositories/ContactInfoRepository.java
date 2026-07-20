@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.ContactInfoModel;
+import com.NovaSmart.Backend.Model.Components.ContactInfoModel;
 import com.NovaSmart.Backend.Model.Enums.Document_status;
 import com.NovaSmart.Backend.Repositories.Interfaces.IContactInfoRepository;
 import lombok.RequiredArgsConstructor;

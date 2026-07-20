@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.Repositories;
 
 import com.NovaSmart.Backend.Model.Enums.Relationships_status;
-import com.NovaSmart.Backend.Model.GuardianAndStudentModel;
+import com.NovaSmart.Backend.Model.Components.GuardianAndStudentModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IGuardianStudentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

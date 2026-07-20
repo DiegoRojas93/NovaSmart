@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.EmergencyContactModel;
+import com.NovaSmart.Backend.Model.Components.EmergencyContactModel;
 import com.NovaSmart.Backend.Model.Enums.Relationships_status;
 import com.NovaSmart.Backend.Repositories.Interfaces.IEmergencyContactRepository;
 import lombok.RequiredArgsConstructor;

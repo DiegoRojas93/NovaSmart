@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.RoleModel;
+import com.NovaSmart.Backend.Model.Components.RoleModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IRoleRepository;
 import lombok.*;
 import org.springframework.dao.EmptyResultDataAccessException;

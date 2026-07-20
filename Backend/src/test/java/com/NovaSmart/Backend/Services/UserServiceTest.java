@@ -2,9 +2,9 @@ package com.NovaSmart.Backend.Services;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
 import com.NovaSmart.Backend.Model.Enums.User_status;
-import com.NovaSmart.Backend.Model.UserModel;
+import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IUserRepository;
-import com.NovaSmart.Backend.Service.Interfaces.IUserInfoService;
+import com.NovaSmart.Backend.Service.Components.Interfaces.IUserInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

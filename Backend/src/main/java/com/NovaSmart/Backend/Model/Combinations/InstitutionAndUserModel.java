@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.Model.Combinations;
 
-import com.NovaSmart.Backend.Model.InstitutionModel;
-import com.NovaSmart.Backend.Model.UserModel;
+import com.NovaSmart.Backend.Model.Components.InstitutionModel;
+import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;

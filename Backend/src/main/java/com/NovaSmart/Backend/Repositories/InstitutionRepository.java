@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.Repositories;
 
 import com.NovaSmart.Backend.Model.Enums.Institution_status;
-import com.NovaSmart.Backend.Model.InstitutionModel;
+import com.NovaSmart.Backend.Model.Components.InstitutionModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IInstitutionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.InstitutionModel;
+import com.NovaSmart.Backend.Model.Components.InstitutionModel;
 
 import java.util.*;
 

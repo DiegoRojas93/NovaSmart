@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.ContactInfoModel;
+import com.NovaSmart.Backend.Model.Components.ContactInfoModel;
 
 import java.util.List;
 import java.util.Optional;

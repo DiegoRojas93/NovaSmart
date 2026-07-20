@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.AttendanceModel;
+import com.NovaSmart.Backend.Model.Components.AttendanceModel;
 import com.NovaSmart.Backend.Model.Enums.Attendance_status;
 import com.NovaSmart.Backend.Repositories.Interfaces.IAttendanceRepository;
 import lombok.RequiredArgsConstructor;

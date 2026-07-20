@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.AcademyPeriodModel;
+import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IAcademyPeriodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

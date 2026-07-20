@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.Repositories;
 
 import com.NovaSmart.Backend.Model.Enums.User_status;
-import com.NovaSmart.Backend.Model.UserModel;
+import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -90,7 +90,7 @@ public class UserRepository implements IUserRepository {
                 if (userModel.getInstitutionId() != null) {
                     ps.setLong(12, userModel.getInstitutionId());
                 } else {
-                    ps.setNull(13, java.sql.Types.BIGINT);
+                    ps.setNull(12, java.sql.Types.BIGINT);
                 }
 
                 return ps;

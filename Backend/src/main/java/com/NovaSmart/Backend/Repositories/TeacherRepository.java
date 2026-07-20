@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.TeacherModel;
+import com.NovaSmart.Backend.Model.Components.TeacherModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.ITeacherRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;

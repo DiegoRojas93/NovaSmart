@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.AcademyPeriodModel;
+import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
 
 import java.util.List;
 import java.util.Optional;

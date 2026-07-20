@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.GuardianAndStudentModel;
+import com.NovaSmart.Backend.Model.Components.GuardianAndStudentModel;
 
 import java.util.List;
 import java.util.Optional;

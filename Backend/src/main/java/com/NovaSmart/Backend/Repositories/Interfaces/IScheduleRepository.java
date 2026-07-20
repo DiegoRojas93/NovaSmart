@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.ScheduleModel;
+import com.NovaSmart.Backend.Model.Components.ScheduleModel;
 
 import java.util.List;
 import java.util.Optional;

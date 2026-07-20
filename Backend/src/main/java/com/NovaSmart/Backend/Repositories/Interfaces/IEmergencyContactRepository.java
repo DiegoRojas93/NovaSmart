@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.EmergencyContactModel;
+import com.NovaSmart.Backend.Model.Components.EmergencyContactModel;
 
 import java.util.List;
 import java.util.Optional;

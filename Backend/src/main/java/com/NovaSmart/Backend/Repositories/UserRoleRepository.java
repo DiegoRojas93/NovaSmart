@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.UserRoleModel;
+import com.NovaSmart.Backend.Model.Components.UserRoleModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IUserRoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.UserModel;
+import com.NovaSmart.Backend.Model.Components.UserModel;
 
 import java.util.List;
 import java.util.Optional;

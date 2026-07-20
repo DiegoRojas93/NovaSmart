@@ -2,9 +2,9 @@ package com.NovaSmart.Backend.Services;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
 import com.NovaSmart.Backend.Model.Enums.Institution_status;
-import com.NovaSmart.Backend.Model.InstitutionModel;
+import com.NovaSmart.Backend.Model.Components.InstitutionModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IInstitutionRepository;
-import com.NovaSmart.Backend.Service.Interfaces.IInstitutionsInfoService;
+import com.NovaSmart.Backend.Service.Components.Interfaces.IInstitutionsInfoService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.EnrollmentModel;
+import com.NovaSmart.Backend.Model.Components.EnrollmentModel;
 
 import java.util.List;
 import java.util.Optional;

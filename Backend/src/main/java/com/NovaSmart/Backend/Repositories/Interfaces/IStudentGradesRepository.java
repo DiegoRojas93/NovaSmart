@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories.Interfaces;
 
-import com.NovaSmart.Backend.Model.StudentGradesModel;
+import com.NovaSmart.Backend.Model.Components.StudentGradesModel;
 
 import java.util.List;
 import java.util.Optional;

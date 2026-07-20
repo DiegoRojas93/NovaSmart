@@ -1,4 +1,4 @@
-import { useState, useRef, type ChangeEvent } from "react";
+import { useState, useRef, type ChangeEvent, type SubmitEvent } from "react";
 
 import bannerForm from '../assets/Banner Form.jpg'
 import { replace, useNavigate } from "react-router";
@@ -121,7 +121,7 @@ export const FormInstitutions = () => {
 
   // 8. Enviar formulario
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -150,7 +150,7 @@ export const FormInstitutions = () => {
         dataToSend.append("photo", photoFile);
       }
 
-      const response = await fetch(`${ apiUrl }/institutions`, {
+      const response = await fetch(`${ apiUrl }/institutions/inscription`, {
         method: 'POST',
         // IMPORTANTE: No agregues 'Content-Type': 'application/json' aquí.
         // El navegador configurará 'multipart/form-data' automáticamente al detectar el FormData.
@@ -162,8 +162,8 @@ export const FormInstitutions = () => {
       }
 
       const data = await response.json();
-      console.log('Institución creada:', data);
-      alert('Institución creada correctamente');
+      // console.log('Institución creada:', data);
+      // alert('Institución creada correctamente');
 
       // 5. Limpiar el formulario
       setFormData({

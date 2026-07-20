@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Repositories;
 
-import com.NovaSmart.Backend.Model.ScheduleModel;
+import com.NovaSmart.Backend.Model.Components.ScheduleModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IScheduleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
