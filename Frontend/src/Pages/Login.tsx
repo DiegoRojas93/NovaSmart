@@ -50,7 +50,7 @@ export const Login = () => {
       console.log("Login exitoso, token guardado.");
 
       // 5. Redirigir al usuario a su panel principal (ajusta la ruta según tu app)
-      navigate("/institution/1", { replace: true });
+      navigate(`/users/${data.userId}`, { replace: true });
 
     } catch (err: any) {
       console.error(err);

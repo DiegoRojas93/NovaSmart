@@ -22,22 +22,45 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
+//    @PostMapping("/login")
+//    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
+//
+//        // 1. Esto lanza excepción automáticamente si la contraseña es incorrecta
+//        authenticationManager.authenticate(
+//            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
+//        );
+//
+//        // 2. Si llega aquí, es válido. Buscamos al usuario para generar el token
+//        UserModel user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+//
+//        // 3. Generamos el JWT
+//        String token = jwtService.generateToken(user.getUsername(), new HashMap<>());
+//
+//        // 4. Devolvemos el token
+//        return ResponseEntity.ok(Map.of("token", token));
+//    }
 
-        // 1. Esto lanza excepción automáticamente si la contraseña es incorrecta
+    @PostMapping("/login")
+    public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
+
+        // 2. Autenticamos al usuario
         authenticationManager.authenticate(
             new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
-        // 2. Si llega aquí, es válido. Buscamos al usuario para generar el token
+        // 3. Buscamos al usuario en la BD
         UserModel user = userRepository.findByUsername(request.getUsername()).orElseThrow();
 
-        // 3. Generamos el JWT
+        // 4. Generamos el JWT
         String token = jwtService.generateToken(user.getUsername(), new HashMap<>());
 
-        // 4. Devolvemos el token
-        return ResponseEntity.ok(Map.of("token", token));
+        // 5. Armamos la respuesta con el Token y el ID del usuario
+        Map response = new HashMap<>();
+        response.put("token", token);
+        response.put("userId", user.getId());
+
+        // 6. Devolvemos la respuesta
+        return ResponseEntity.ok(response);
     }
 }
 

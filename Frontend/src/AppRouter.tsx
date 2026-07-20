@@ -19,13 +19,12 @@ export const AppRouter = () => {
           <Route path="/Login" element={ <Login /> } />
         </Route>
 
-        {/* 👇 AQUÍ ESTÁ EL CAMBIO: Reemplazamos "/User" por "/institution/:institutionId" */}
-        <Route path="/institution/:institutionId" element={
+        <Route path="/users" element={
           <Suspense fallback={<div>Loading...</div>}>
             <Layout />
           </Suspense>
         }>
-          <Route path="" element={ <User /> } />
+          <Route path=":userId" element={ <User /> } />
         </Route>
         
         <Route path="/" element={ <Navigate to="/Home" />} />
