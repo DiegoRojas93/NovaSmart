@@ -1,0 +1,49 @@
+{
+  "Admin": {
+    "sidebarAndPages": [ 
+      { "id": 1, "pages": { "Inscripciónes": { "Sections": ["Dasboard", "Formulario de inscripción", "Formulario de actualización"] } } },
+      { "id": 2, "pages": { "Ajustes del sistema": { "Sections": [] } } }
+    ]
+  },
+  "Rector": {
+    "sidebarAndPages": [ 
+    
+      { "id":1, "pages": {"Ajustes del rector": {"Sections": []}}}
+    ]
+  },
+  "Coordinador": {
+    "sidebarAndPages": [ 
+      { "id":2, "pages": {"Ajustes Cordinador": {"Sections": []}}}
+    ]
+  },
+  "Secretario academico": {
+    "sidebarAndPages": [ 
+      { "id":2, "pages": {"Ajustes del secretario": {"Sections": []}}}
+    ]
+  },
+  "Personal docente": {
+    "sidebarAndPages": [ 
+      { "id":1, "pages": {"Ajustes del docente": {"Sections": []}}}
+    ]
+  },
+  "Psícologo": {
+    "sidebarAndPages": [ 
+      { "id":1, "pages": {"Ajustes del docente": {"Sections": []}}}
+    ]
+  },
+  "Trabajador social": {
+    "sidebarAndPages": [ 
+      { "id":1, "pages": {"Ajustes del trabajador social": {"Sections": []}}}
+    ]
+  },
+  "Estudiante": {
+    "sidebarAndPages": [ 
+      { "id":1, "page": {"Ajustes del estudiante": {"Sections": []}}}
+    ]
+  },
+  "Acudiente": {
+    "sidebarAndPages": [ 
+      { "id":1, "pages": {"Ajustes del acudiente": {"Sections": []}}}
+    ]
+  }
+}

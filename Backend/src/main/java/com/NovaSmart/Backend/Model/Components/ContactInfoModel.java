@@ -32,7 +32,6 @@ public class ContactInfoModel {
 
     private String address;
 
-    @NotNull(message = "El ID del usuario es obligatorio.")
     @Column("user_id")
     private Long userId; // Cambiado a camelCase
 }

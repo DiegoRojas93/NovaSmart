@@ -55,4 +55,10 @@ public class RoleService implements IRoleService {
     public void deleteById(Long id) {
         roleRepository.deleteById(id);
     }
+
+    @Override
+    public Optional<RoleModel> findByName(String name) {
+        return roleRepository.findByName(name);
+    }
+
 }

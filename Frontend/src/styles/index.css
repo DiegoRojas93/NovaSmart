@@ -117,34 +117,34 @@
   }
 }
 
-/* =========================
-   Radius
-========================== */
-
-/* h1{
-   color: var(--color-warning)
-} */
-
-/* label {
-   color: var(background-dark)
+@utility no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE y Edge */
+  
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari y Opera */
+  }
 }
 
-input{
-   color: var(--color-secondary-tx);
-   background: white;
-   border: 2px solid var(--color-brand-dark);
+/* 1. CREAMOS LA CLASE PARA TAILWIND */
+@utility animate-page-turn {
+  transform-origin: left center; /* Anclamos la transformación al lomo del cuaderno */
+  animation: page-turn 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
 
-select {
-   color: var(--color-secondary-tx);
-   background: white;
-   border: 2px solid var(--color-brand-dark);
+/* 2. DEFINIMOS QUÉ HACE LA ANIMACIÓN */
+@keyframes page-turn {
+  0% {
+    opacity: 0;
+    /* La hoja empieza levantada a 90 grados hacia ti */
+    transform: perspective(1200px) rotateY(-90deg); 
+  }
+  30% {
+    opacity: 1; /* Se vuelve visible rápidamente mientras cae */
+  }
+  100% {
+    opacity: 1;
+    /* Cae totalmente plana sobre el cuaderno */
+    transform: perspective(1200px) rotateY(0deg); 
+  }
 }
-
-input::placeholder {
-  color: var(--color-disabled-tx);
-}
-
-select::placeholder {
-  color: var(--color-disabled-tx);
-} */

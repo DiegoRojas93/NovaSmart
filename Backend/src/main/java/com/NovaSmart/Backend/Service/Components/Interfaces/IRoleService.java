@@ -10,4 +10,5 @@ public interface IRoleService {
     Optional<RoleModel> findById(Long id);
     List<RoleModel> findAll();
     void deleteById(Long id);
+    Optional<RoleModel> findByName(String name);
 }

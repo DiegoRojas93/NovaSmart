@@ -60,7 +60,13 @@ public class EmergencyContactRepository implements IEmergencyContactRepository {
                 ps.setString(5, emergencyContact.getPhoneNumber());
                 ps.setString(6, emergencyContact.getCity());
                 ps.setString(7, emergencyContact.getAddress());
-                ps.setLong(8, emergencyContact.getUserId());
+//                ps.setLong(8, emergencyContact.getUserId());
+
+                if (emergencyContact.getUserId() != null) {
+                    ps.setLong(8, emergencyContact.getUserId());
+                } else {
+                    ps.setNull(8, java.sql.Types.BIGINT);
+                }
                 return ps;
             }, keyHolder);
 

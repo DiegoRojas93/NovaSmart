@@ -58,7 +58,13 @@ public class ContactInfoRepository implements IContactInfoRepository {
                 ps.setString(4, contactInfo.getPhoneNumber());
                 ps.setString(5, contactInfo.getCity());
                 ps.setString(6, contactInfo.getAddress());
-                ps.setLong(7, contactInfo.getUserId());
+//                ps.setLong(7, contactInfo.getUserId());
+
+                if (contactInfo.getUserId() != null) {
+                    ps.setLong(7, contactInfo.getUserId());
+                } else {
+                    ps.setNull(7, java.sql.Types.BIGINT);
+                }
                 return ps;
             }, keyHolder);
 

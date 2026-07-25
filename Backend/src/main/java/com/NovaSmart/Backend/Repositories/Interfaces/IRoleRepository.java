@@ -13,4 +13,6 @@ public interface IRoleRepository {
     List<RoleModel> findAll();
 
     void deleteById(Long id);
+
+    Optional<RoleModel> findByName(String name);
 }

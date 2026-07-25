@@ -83,4 +83,15 @@ public class RoleRepository implements IRoleRepository {
         String query = "DELETE FROM roles WHERE id = ?";
         jdbcTemplate.update(query, id);
     }
+
+    @Override
+    public Optional<RoleModel> findByName(String name) {
+        String query = "SELECT * FROM roles WHERE name = ?";
+        try {
+            // Asumiendo que tu RowMapper se llama roleRowMapper
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, roleModelRowMapper, name));
+        } catch (org.springframework.dao.EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

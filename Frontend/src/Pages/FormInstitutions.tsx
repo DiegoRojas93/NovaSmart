@@ -23,6 +23,26 @@ interface FormData {
     vision: string;
     mission: string;
   };
+  roles: {
+    name: string;
+  };
+  contact_info: {
+    documentType: string;
+    identification: string;
+    email: string;
+    phone_number: string;
+    city: string;
+    address: string;
+  };
+  emergency_contacts: {
+    firstName: string;
+    lastName: string;
+    relationship: string;
+    email: string;
+    phone_number: string;
+    city: string;
+    address: string;
+  }
 }
 
 export const FormInstitutions = () => {
@@ -48,6 +68,26 @@ export const FormInstitutions = () => {
       status: '',
       vision: '',
       mission: ''
+    },
+    roles: {
+      name: ''
+    },
+    contact_info: {
+      documentType: '',
+      identification: '',
+      email: '',
+      phone_number: '',
+      city: '',
+      address: '',
+    },
+    emergency_contacts: {
+      firstName: '',
+      lastName: '',
+      relationship: '',
+      email: '',
+      phone_number: '',
+      city: '',
+      address: '',
     }
   });
 
@@ -62,7 +102,7 @@ export const FormInstitutions = () => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     
-    type ParentKey = "user" | "institution";
+    type ParentKey = "user" | "institution" | "roles" | "contact_info" | "emergency_contacts";
 
     const [parent, child] = name.split(".") as [
       ParentKey,
@@ -83,7 +123,7 @@ export const FormInstitutions = () => {
   const selectChange = (e: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
-    type ParentKey = "user" | "institution";
+    type ParentKey = "user" | "institution" | "roles" | "contact_info" | "emergency_contacts";
 
     const [parent, child] = name.split(".") as [
       ParentKey,
@@ -150,6 +190,8 @@ export const FormInstitutions = () => {
         dataToSend.append("photo", photoFile);
       }
 
+      console.log(dataToSend);
+
       const response = await fetch(`${ apiUrl }/institutions/inscription`, {
         method: 'POST',
         // IMPORTANTE: No agregues 'Content-Type': 'application/json' aquí.
@@ -166,12 +208,33 @@ export const FormInstitutions = () => {
       // alert('Institución creada correctamente');
 
       // 5. Limpiar el formulario
+
       setFormData({
         user: {
           firstName: '', lastName: '', birthday: '', username: '', password: '', is_admin: true, status: ''
         },
         institution: {
           name: '', nit: '', department: '', city: '', address: '', status: '', vision: '', mission: ''
+        },
+        roles: {
+          name: ''
+        },
+        contact_info: {
+          documentType: '',
+          identification: '',
+          email: '',
+          phone_number: '',
+          city: '',
+          address: '',
+        },
+        emergency_contacts: {
+          firstName: '',
+          lastName: '',
+          relationship: '',
+          email: '',
+          phone_number: '',
+          city: '',
+          address: '',
         }
       });
 
@@ -296,6 +359,28 @@ export const FormInstitutions = () => {
             <br />
 
             <div className="flex justify-between">
+              <label htmlFor="name" className="flex-1">Rol usuario:</label>
+              <select
+                id="name"
+                name="roles.name"
+                className="flex-1"
+                value={formData.roles.name}
+                onChange={selectChange}
+              >
+                <option value="">Seleccione un rol</option>
+                <option value="Rector">Rector</option>
+                <option value="Coordinador">Coordinador</option>
+                <option value="Sercretario academico">Sercretario academico</option>
+                <option value="Personal docente">Personal docente</option>
+                <option value="Psícologo">Psícologo</option>
+                <option value="Trabajador social">Trabajador social</option>
+                <option value="Enfermero">Enfermero</option>
+              </select>
+            </div>
+
+            <br />
+
+            <div className="flex justify-between">
               <label htmlFor="photo" className="flex-1">Foto del usuario:</label>
               <input 
                 type="file" 
@@ -308,6 +393,222 @@ export const FormInstitutions = () => {
               />
             </div>
           </div>
+
+          <br />
+          <hr />
+
+          <br />
+          <h2 className="text-2xl text-left">Información del usuario</h2>
+          <br />
+
+          <div className="w-full flex-col justify-around items-center">
+
+            <div className="flex justify-between">
+              <label htmlFor="documentType" className="flex-1">Tipo de documento:</label>
+              <select
+                id="documentType"
+                name="contact_info.documentType"
+                className="flex-1"
+                value={formData.contact_info.documentType}
+                onChange={selectChange}
+              >
+                <option value="">Seleccione su tipo de documento</option>
+                <option value="CC">Cédula de Ciudadanía</option>
+                <option value="CE">Cédula de Extranjería</option>
+                <option value="PAS">Pasaporte</option>
+                <option value="NIT">NIT</option>
+
+              </select>
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="identification" className="flex-1">Número de identificación:</label>
+              <input
+                type="test"
+                id="identification"
+                name="contact_info.identification"
+                placeholder="Ej: Rojas Quintero"
+                className="flex-1"
+                value={formData.contact_info.identification}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="email" className="flex-1">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="contact_info.email"
+                className="flex-1"
+                value={formData.contact_info.email}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="phone_number" className="flex-1">Número telefonico:</label>
+              <input
+                type="text"
+                id="phone_number"
+                name="contact_info.phone_number"
+                placeholder="Ej: 555-555-5555"
+                className="flex-1"
+                value={formData.contact_info.phone_number}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="city" className="flex-1">Ciudad:</label>
+              <input
+                type="text"
+                id="city"
+                name="contact_info.city"
+                placeholder="Ej: Bogotá"
+                className="flex-1"
+                value={formData.contact_info.city}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="address" className="flex-1">Dirección:</label>
+              <input
+                type="text"
+                id="address"
+                name="contact_info.address"
+                placeholder="Ej: Calle 4 Biss # 10-12"
+                className="flex-1"
+                value={formData.contact_info.address}
+                onChange={handleChange}
+              />
+            </div>
+
+          </div>
+
+          <br />
+          <hr />
+
+          <br />
+          <h2 className="text-2xl text-left">Contacto de emergencia</h2>
+          <br />
+
+          <div className="w-full flex-col justify-around items-center">
+
+            <div className="flex justify-between">
+              <label htmlFor="firstName" className="flex-1">Nombre:</label>
+              <input
+                type="text"
+                id="firstName"
+                name="emergency_contacts.firstName"
+                placeholder="Ej: Diego Fernando"
+                className="flex-1"
+                value={formData.emergency_contacts.firstName}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="lastName" className="flex-1">Apellido:</label>
+              <input
+                type="text"
+                id="lastName"
+                name="emergency_contacts.lastName"
+                placeholder="Ej: Rojas Quintero"
+                className="flex-1"
+                value={formData.emergency_contacts.lastName}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="relationship" className="flex-1">Relación:</label>
+              <select
+                id="relationship"
+                name="emergency_contacts.relationship"
+                className="flex-1"
+                value={formData.emergency_contacts.relationship}
+                onChange={selectChange}
+              >
+                <option value="">Seleccione un tipo de relación</option>
+                <option value="Padre">Padre</option>
+                <option value="Madre">Madre</option>
+                <option value="Tio">Tio</option>
+                <option value="Tia">Tia</option>
+                <option value="Abuelo">Abuela</option>
+                <option value="Hermano">Hermana</option>
+                <option value="Padrastro">Padrastro</option>
+                <option value="Madrastra">Madrastra</option>
+                <option value="Amigo">Amigo</option>
+                <option value="Amiga">Amiga</option>
+              </select>
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="email" className="flex-1">Email:</label>
+              <input
+                type="email"
+                id="email"
+                name="emergency_contacts.email"
+                className="flex-1"
+                value={formData.emergency_contacts.email}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="phone_number" className="flex-1">Número telefonico:</label>
+              <input
+                type="text"
+                id="phone_number"
+                name="emergency_contacts.phone_number"
+                placeholder="Ej: 555-555-5555"
+                className="flex-1"
+                value={formData.emergency_contacts.phone_number}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="city" className="flex-1">Ciudad:</label>
+              <input
+                type="text"
+                id="city"
+                name="emergency_contacts.city"
+                placeholder="Ej: Bogotá"
+                className="flex-1"
+                value={formData.emergency_contacts.city}
+                onChange={handleChange}
+              />
+            </div>
+            <br />
+
+            <div className="flex justify-between">
+              <label htmlFor="address" className="flex-1">Dirección:</label>
+              <input
+                type="text"
+                id="address"
+                name="emergency_contacts.address"
+                placeholder="Ej: Calle 4 Biss # 10-12"
+                className="flex-1"
+                value={formData.emergency_contacts.address}
+                onChange={handleChange}
+              />
+            </div>
+
+          </div>
+
 
           <br />
           <hr />

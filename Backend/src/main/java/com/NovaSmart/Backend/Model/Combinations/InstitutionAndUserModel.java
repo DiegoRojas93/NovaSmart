@@ -1,7 +1,6 @@
 package com.NovaSmart.Backend.Model.Combinations;
 
-import com.NovaSmart.Backend.Model.Components.InstitutionModel;
-import com.NovaSmart.Backend.Model.Components.UserModel;
+import com.NovaSmart.Backend.Model.Components.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -17,7 +16,19 @@ public class InstitutionAndUserModel {
     @JsonProperty("user")
     private UserModel userModel;
 
-    @Valid // Le dice a Spring que valide los campos internos de InstitutionsModel
+    @Valid
     @JsonProperty("institution")
     private InstitutionModel institutionModel;
+
+    @Valid
+    @JsonProperty("roles")
+    private RoleModel roleModel;
+
+    @Valid
+    @JsonProperty("contact_info")
+    private ContactInfoModel contactInfoModel;
+
+    @Valid
+    @JsonProperty("emergency_contacts")
+    private EmergencyContactModel emergencyContactModel;
 }

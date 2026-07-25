@@ -1,5 +1,5 @@
 import { useState, type ChangeEvent, type SubmitEvent } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
 
 export const Login = () => {
   // 1. Estados para los campos del formulario y el manejo de UI
@@ -62,7 +62,7 @@ export const Login = () => {
 
   return (
     <section className="min-h-screen w-full flex items-center justify-center bg-gray-50">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border-t-4 border-amber-400">
+      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md border-t-4 border-brand-primary-4">
         <h1 className="text-3xl font-bold text-center text-gray-800 mb-6">
           Iniciar Sesión
         </h1>
@@ -111,13 +111,17 @@ export const Login = () => {
             type="submit"
             disabled={loading}
             className={`mt-4 w-full text-white font-bold py-2 px-4 rounded transition-colors ${
-              loading ? "bg-gray-400 cursor-not-allowed" : "bg-amber-500 hover:bg-amber-600"
+              loading ? "bg-gray-400 cursor-not-allowed" : "bg-brand-primary-3 hover:bg-brand-primary-4"
             }`}
           >
             {loading ? "Verificando..." : "Entrar"}
           </button>
 
         </form>
+        <div className="flex h-10 mt-4 text-sm text-gray-600">
+          <Link to="/" className="flex-1 text-center">Volver al Home</Link>
+          <Link to="/" className="flex-1 text-center">Restaura tu contraseña</Link>
+        </div>
       </div>
     </section>
   );

@@ -22,24 +22,6 @@ public class AuthController {
     private final UserRepository userRepository;
     private final JwtService jwtService;
 
-//    @PostMapping("/login")
-//    public ResponseEntity<Map<String, String>> login(@RequestBody LoginRequest request) {
-//
-//        // 1. Esto lanza excepción automáticamente si la contraseña es incorrecta
-//        authenticationManager.authenticate(
-//            new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
-//        );
-//
-//        // 2. Si llega aquí, es válido. Buscamos al usuario para generar el token
-//        UserModel user = userRepository.findByUsername(request.getUsername()).orElseThrow();
-//
-//        // 3. Generamos el JWT
-//        String token = jwtService.generateToken(user.getUsername(), new HashMap<>());
-//
-//        // 4. Devolvemos el token
-//        return ResponseEntity.ok(Map.of("token", token));
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<Map<String, Object>> login(@RequestBody LoginRequest request) {
 
