@@ -1,5 +1,5 @@
 import { useState } from "react";
-import FormInscription from "../../Roles/Admin/FormInscription"; // El formulario
+import FormInscription from "../../Roles/Admin/FormInscription";
 import Dashboard from "../../Roles/Admin/Dashboard";
 import ProfileEditing from "@/Roles/Admin/ProfileEditing";
 import AcademicsDashboard from "@/Roles/Admin/AcademicsDashboard";
