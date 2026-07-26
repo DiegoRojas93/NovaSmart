@@ -25,7 +25,7 @@
    --color-brand-secundary-4: #17876d;
    --color-brand-secundary-5: #2fa98d;
    --color-brand-secundary-6: #707d7d;
-   --color-brand-secundary-7: #aacbc4; /* Ideal para textos secundarios/mutados */
+   --color-brand-secundary-7: #aacbc4;
 
    /* Invertimos la lógica para fondos claros */
     --color-bg-app: var(--color-brand-primary-6);

@@ -490,8 +490,8 @@ export const FormInstitutions = () => {
             
             {/* ENLACES REUBICADOS AQUÍ */}
             <div className="flex h-10 mt-4 text-sm text-gray-600 font-semibold items-center">
-              <Link to="/" className="flex-1 text-center hover:text-blue-600 hover:underline transition-colors">Volver al Home</Link>
-              <Link to="/Login" className="flex-1 text-center hover:text-blue-600 hover:underline transition-colors border-l-2 border-gray-200">Inicia sesión</Link>
+              <Link to="/" className="flex-1 text-center hover:text-status-success hover:underline transition-colors">Volver al Home</Link>
+              <Link to="/Login" className="flex-1 text-center hover:text-status-success hover:underline transition-colors border-l-2 border-gray-200">Inicia sesión</Link>
             </div>
           </div>
         </form>
