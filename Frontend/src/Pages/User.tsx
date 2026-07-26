@@ -96,7 +96,7 @@ const User = () => {
 
   // Obtenemos las páginas según el rol del usuario (Asumimos "Rector" por defecto para el ejemplo)
   // 1. Mantenemos el rol original intacto
-  const userRole = "Rector"; // Nota: Aquí idealmente leerás el rol de la BD (ej. user.roleName)
+  const userRole = "Acudiente"; // Nota: Aquí idealmente leerás el rol de la BD (ej. user.roleName)
   
   // 2. Obtenemos las páginas normales para ese rol
   let currentRolePages = typedRolesData[userRole]?.sidebarAndPages || [];

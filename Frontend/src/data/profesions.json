@@ -1,8 +1,11 @@
 {
-  "Admin": {
+"Admin": {
     "sidebarAndPages": [ 
-      { "id": 1, "pages": { "Inscripciónes": { "Sections": ["Dasboard", "Formulario de inscripción", "Formulario de actualización"] } } },
-      { "id": 2, "pages": { "Ajustes del sistema": { "Sections": [] } } }
+      { "id": 1, "pages": { "Ajustes del Sistema": { "Sections": ["Perfil de la Institución", "Periodos Académicos"] } } },
+      { "id": 2, "pages": { "Inscripciónes": { "Sections": ["Dashboard", "Formulario de inscripción", "Formulario de actualización"] } } },
+      { "id": 3, "pages": { "Grados, cursos y materias": { "Sections": ["Dashboard 2", "Creación y asignación academica", "Docentes: Formulario de inscripción", "Estudiantes: Formulario de inscripción", "Acudiente: Formulario de inscripción"] } } },
+      { "id": 4, "pages": { "Horarios": { "Sections": ["Docentes: Horarios", "Estudiantes: Horarios"] } } },
+      { "id": 5, "pages": { "Reportes y Auditoría": { "Sections": ["Asistencia Global", "Calificaciones", "Vínculos Familiares"] } } }
     ]
   },
   "Rector": {
@@ -23,7 +26,10 @@
   },
   "Personal docente": {
     "sidebarAndPages": [ 
-      { "id":1, "pages": {"Ajustes del docente": {"Sections": []}}}
+      { "id": 1, "pages": { "Mi Tablero": { "Sections": ["Dashboard Docente"] } } },
+      { "id": 2, "pages": { "Gestión de Aula": { "Sections": ["Mis clases", "Toma de Asistencia"] } } },
+      { "id": 3, "pages": { "Rendimiento Académico": { "Sections": ["Registro de Calificaciones"] } } },
+      { "id": 4, "pages": { "Trabajos y talleres": { "Sections": ["Asignar Tareas", "Calificar Entregas"] } } }
     ]
   },
   "Psícologo": {
@@ -36,14 +42,20 @@
       { "id":1, "pages": {"Ajustes del trabajador social": {"Sections": []}}}
     ]
   },
-  "Estudiante": {
+"Estudiante": {
     "sidebarAndPages": [ 
-      { "id":1, "page": {"Ajustes del estudiante": {"Sections": []}}}
+      { "id": 1, "pages": { "Mi Tablero": { "Sections": ["Resumen de Hoy"] } } },
+      { "id": 2, "pages": { "Mi Horario": { "Sections": ["Horario Semanal"] } } },
+      { "id": 3, "pages": { "Tareas y Trabajos": { "Sections": ["Pendientes", "Entregados"] } } },
+      { "id": 4, "pages": { "Rendimiento Académico": { "Sections": ["Mis Calificaciones", "Mi Asistencia"] } } },
+      { "id": 5, "pages": { "Ajustes": { "Sections": ["Perfil del Estudiante"] } } }
     ]
   },
   "Acudiente": {
     "sidebarAndPages": [ 
-      { "id":1, "pages": {"Ajustes del acudiente": {"Sections": []}}}
+      { "id": 1, "pages": { "Mi Tablero": { "Sections": ["Resumen de Estudiantes"] } } },
+      { "id": 2, "pages": { "Seguimiento Académico": { "Sections": ["Boletines", "Reporte de Asistencia"] } } },
+      { "id": 3, "pages": { "Ajustes": { "Sections": ["Actualizar Datos"] } } }
     ]
   }
 }

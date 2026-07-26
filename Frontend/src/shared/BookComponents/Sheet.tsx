@@ -1,7 +1,34 @@
 import { useState } from "react";
 import FormInscription from "../../Roles/Admin/FormInscription"; // El formulario
 import Dashboard from "../../Roles/Admin/Dashboard";
-import InConstruction from "../../Roles/Admin/InConstruction";
+import ProfileEditing from "@/Roles/Admin/ProfileEditing";
+import AcademicsDashboard from "@/Roles/Admin/AcademicsDashboard";
+import AcademicsCreationForm from "@/Roles/Admin/AcademicsCreationForm";
+import TeacherForm from "@/Roles/Admin/TeacherForm";
+import StudentForm from "@/Roles/Admin/StudentForm";
+import GuardianForm from "@/Roles/Admin/GuardianForm";
+import TeacherScheduleForm from "@/Roles/Admin/TeacherScheduleForm";
+import StudentEnrollmentForm from "@/Roles/Admin/StudentEnrollmentForm";
+import InstitutionProfileForm from "@/Roles/Admin/InstitutionProfileForm";
+import AcademicPeriodManager from "@/Roles/Admin/AcademicPeriodManager";
+import GlobalAttendanceReport from "@/Roles/Admin/GlobalAttendanceReport";
+import GlobalGradesReport from "@/Roles/Admin/GlobalGradesReport";
+import FamilyLinksManager from "@/Roles/Admin/FamilyLinksManager";
+import TeacherDashboard from "@/Roles/Teacher/TeacherDashboard";
+import TeacherAttendance from "@/Roles/Teacher/TeacherAttendance";
+import TeacherClasses from "@/Roles/Teacher/TeacherClasses";
+import TeacherGrades from "@/Roles/Teacher/TeacherGrades";
+import TeacherAssignments from "@/Roles/Teacher/TeacherAssignments";
+import TeacherSubmissions from "@/Roles/Teacher/TeacherSubmissions";
+import StudentDashboard from "@/Roles/Student/StudentDashboard";
+import StudentSchedule from "@/Roles/Student/StudentSchedule";
+import StudentPendingTasks from "@/Roles/Student/StudentPendingTasks";
+import StudentSubmittedTasks from "@/Roles/Student/StudentSubmittedTasks";
+import StudentGrades from "@/Roles/Student/StudentGrades";
+import StudentAttendance from "@/Roles/Student/StudentAttendance";
+import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
+import GuardianGrades from "@/Roles/Guardian/GuardianGrades";
+import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
 
 interface SliderProps {
   sections: string[];
@@ -17,12 +44,81 @@ const Sheet = ({ sections }: SliderProps) => {
 
       // Admin
 
+      case "Perfil de la Institución":
+        return <InstitutionProfileForm />; 
+      case "Periodos Académicos":
+        return <AcademicPeriodManager />; 
       case "Formulario de inscripción":
         return <FormInscription />; 
-      case "Dasboard":
+      case "Dashboard":
         return <Dashboard />;
       case "Formulario de actualización":
-        return <InConstruction />;
+        return <ProfileEditing />;
+      case "Dashboard 2":
+        return <AcademicsDashboard />;
+      case "Creación y asignación academica":
+        return <AcademicsCreationForm />;
+      case "Docentes: Formulario de inscripción":
+        return <TeacherForm />;
+      case "Estudiantes: Formulario de inscripción":
+        return <StudentForm />;
+      case "Acudiente: Formulario de inscripción":
+        return <GuardianForm />;
+      case "Docentes: Horarios":
+        return <TeacherScheduleForm />;
+      case "Estudiantes: Horarios":
+        return <StudentEnrollmentForm />;
+      case "Asistencia Global":
+        return <GlobalAttendanceReport />;
+      case "Calificaciones":
+        return <GlobalGradesReport />;
+      case "Vínculos Familiares":
+        return <FamilyLinksManager />;
+
+      // Personal Docente
+
+      case "Dashboard Docente":
+        return <TeacherDashboard />;
+
+      case "Toma de Asistencia":
+        return <TeacherAttendance />;
+
+      case "Mis clases":
+        return <TeacherClasses />;
+
+      case "Registro de Calificaciones":
+        return <TeacherGrades />;
+
+      case "Asignar Tareas":
+        return <TeacherAssignments />;
+
+      case "Calificar Entregas":
+        return <TeacherSubmissions />;
+
+      // Estudiante
+
+      case "Resumen de Hoy":
+        return <StudentDashboard />;
+      case "Horario Semanal":
+        return <StudentSchedule />;
+      case "Pendientes":
+        return <StudentPendingTasks />;
+      case "Entregados":
+        return <StudentSubmittedTasks />;
+      case "Mis Calificaciones":
+        return <StudentGrades />;
+      case "Mi Asistencia":
+        return <StudentAttendance />;
+
+      // Acudientes
+
+      case "Resumen de Estudiantes":
+        return <GuardianDashboard />;
+      case "Boletines":
+        return <GuardianGrades />;
+      case "Actualizar Datos":
+        return <GuardianSettings />;
+
       default:
         return <div className="p-4 text-blue-900/70 font-medium">Aún no hay contenido asignado para esta sección.</div>;
     }
