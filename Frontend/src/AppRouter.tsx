@@ -2,10 +2,12 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router";
 import { FormInstitutions } from './Pages/FormInstitutions';
 import Home from "./Pages/Home";
 import PageNotFound from "./Pages/PageNotFound";
-// import Layout from "./Pages/Layout";
 import { lazy, Suspense } from "react";
 import User from "./Pages/User";
 import { Login } from "./Pages/Login";
+import { About } from "./Pages/About";
+import { Contact } from "./Pages/Contact";
+
 
 const Layout = lazy(() => import("./Pages/Layout"))
 
@@ -15,8 +17,10 @@ export const AppRouter = () => {
       <Routes>
         <Route path="/" element={<Layout />} >
           <Route index element={ <Home /> } />
-          <Route path="/Home/Register" element={ <FormInstitutions /> } />
+          <Route path="/Register" element={ <FormInstitutions /> } />
           <Route path="/Login" element={ <Login /> } />
+          <Route path="/About" element={ <About /> } />
+          <Route path="/Contact" element={ <Contact /> } />
         </Route>
 
         <Route path="/users" element={

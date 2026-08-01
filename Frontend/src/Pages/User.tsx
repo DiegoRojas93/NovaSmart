@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router";
 
 // Importaciones base
 import NavBarComponent from "../shared/PagesComponents/NavBarComponent";
-import BannerComponent from "../shared/PagesComponents/BannerComponent";
 import CardBannerComponent from "../shared/PagesComponents/CardBannerComponent";
 import MenuButtonComponent from "../shared/PagesComponents/MenuButtonComponent";
 
@@ -16,6 +15,7 @@ import NotebookCover from "../shared/BookComponents/NotebookCover";
 import Sheet from "../shared/BookComponents/Sheet";
 
 import rolesData from '../data/profesions.json';
+import BannerUserComponent from "@/shared/PagesComponents/BannerUserComponent";
 
 // --- TIPADO DEL JSON ---
 interface RoleData {
@@ -144,7 +144,7 @@ const User = () => {
 
           <MenuButtonComponent onToggle={ toggleSidevar } isSidebarOpen={ isSidebarOpen } />
 
-          <BannerComponent bannerUrl={ bannerUrl } />
+          <BannerUserComponent bannerUrl={ bannerUrl } />
 
           <CardBannerComponent
             institution={ institution }

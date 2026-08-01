@@ -26,9 +26,10 @@ import StudentPendingTasks from "@/Roles/Student/StudentPendingTasks";
 import StudentSubmittedTasks from "@/Roles/Student/StudentSubmittedTasks";
 import StudentGrades from "@/Roles/Student/StudentGrades";
 import StudentAttendance from "@/Roles/Student/StudentAttendance";
-import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
+
 import GuardianGrades from "@/Roles/Guardian/GuardianGrades";
 import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
+import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
 
 interface SliderProps {
   sections: string[];
@@ -64,9 +65,9 @@ const Sheet = ({ sections }: SliderProps) => {
         return <StudentForm />;
       case "Acudiente: Formulario de inscripción":
         return <GuardianForm />;
-      case "Docentes: Horarios":
+      case "Horarios: Docentes":
         return <TeacherScheduleForm />;
-      case "Estudiantes: Horarios":
+      case "Horarios: Estudientes":
         return <StudentEnrollmentForm />;
       case "Asistencia Global":
         return <GlobalAttendanceReport />;
@@ -79,19 +80,14 @@ const Sheet = ({ sections }: SliderProps) => {
 
       case "Dashboard Docente":
         return <TeacherDashboard />;
-
       case "Toma de Asistencia":
         return <TeacherAttendance />;
-
       case "Mis clases":
         return <TeacherClasses />;
-
       case "Registro de Calificaciones":
         return <TeacherGrades />;
-
       case "Asignar Tareas":
         return <TeacherAssignments />;
-
       case "Calificar Entregas":
         return <TeacherSubmissions />;
 
@@ -112,7 +108,7 @@ const Sheet = ({ sections }: SliderProps) => {
 
       // Acudientes
 
-      case "Resumen de Estudiantes":
+      case "Resumen de estudiantes":
         return <GuardianDashboard />;
       case "Boletines":
         return <GuardianGrades />;
