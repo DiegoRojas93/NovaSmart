@@ -35,7 +35,6 @@ public class InstitutionInscriptionService implements IInstitutionInscription {
         MultipartFile banner,
         MultipartFile photo) {
 
-
         InstitutionModel institution = request.getInstitutionModel();
         UserModel user = request.getUserModel();
         RoleModel role = request.getRoleModel();

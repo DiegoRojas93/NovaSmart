@@ -2,8 +2,20 @@ import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from "r
 import { Save, Building2, Map, BookOpen, Image as ImageIcon } from "lucide-react";
 
 // --- INTERFACES BASADAS EN LA BASE DE DATOS ---
-export interface InstitutionFormData {
-  id?: string;
+// export interface InstitutionFormData {
+//   id?: string;
+//   nit: string;
+//   name: string;
+//   department: string;
+//   city: string;
+//   address: string;
+//   vision: string;
+//   mission: string;
+//   status: string; // ENUM: 'ACTIVA', 'INACTIVA'
+// }
+
+interface institutionFormData {
+  id?: number;
   nit: string;
   name: string;
   department: string;
@@ -11,14 +23,40 @@ export interface InstitutionFormData {
   address: string;
   vision: string;
   mission: string;
-  status: string; // ENUM: 'ACTIVA', 'INACTIVA'
+  logo: string;
+  banner: string;
+  status: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
+
+interface logoUrl {
+  logoUrl: string
+}
+
+interface bannerUrl {
+  bannerUrl: string
 }
 
 interface Props {
-  initialData?: InstitutionFormData | null;
+  initialIntitutionData?: institutionFormData | null;
+  logoUrl: string;
+  bannerUrl: string;
 }
 
-const defaultFormData: InstitutionFormData = {
+// const defaultFormData: InstitutionFormData = {
+//   nit: "",
+//   name: "",
+//   department: "",
+//   city: "",
+//   address: "",
+//   vision: "",
+//   mission: "",
+//   status: "ACTIVA"
+// };
+
+const defaultFormData: institutionFormData = {
   nit: "",
   name: "",
   department: "",
@@ -26,28 +64,35 @@ const defaultFormData: InstitutionFormData = {
   address: "",
   vision: "",
   mission: "",
-  status: "ACTIVA"
+  logo: "",
+  banner: "",
+  status: "ACTIVA",
+  createdAt: "",
+  updatedAt:"",
+  deletedAt: ""
 };
 
-const InstitutionProfileForm = ({ initialData }: Props) => {
-  const [isSaving, setIsSaving] = useState(false);
-  const [formData, setFormData] = useState<InstitutionFormData>(defaultFormData);
+const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: Props) => {
+
+  const [isSaving, setIsSaving] = useState(false),
+    [formData, setFormData] = useState<institutionFormData>(defaultFormData);
   
   // Referencias para los archivos multimedia
-  const logoInputRef = useRef<HTMLInputElement>(null);
-  const bannerInputRef = useRef<HTMLInputElement>(null);
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [bannerFile, setBannerFile] = useState<File | null>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null),
+    bannerInputRef = useRef<HTMLInputElement>(null),
+    [logoFile, setLogoFile] = useState<File | null>(null),
+    [bannerFile, setBannerFile] = useState<File | null>(null);
 
   // --- EFECTO PARA CARGA INICIAL ---
   useEffect(() => {
-    if (initialData) {
-      setFormData(initialData);
+    if (initialIntitutionData) {
+      setFormData(initialIntitutionData);
     } else {
       // En un caso real, aquí harías un fetch() a tu API para traer la institución principal
       setFormData(defaultFormData);
     }
-  }, [initialData]);
+    console.log(initialIntitutionData)
+  }, [initialIntitutionData]);
 
   // --- MANEJADORES ---
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -111,13 +156,13 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
             
             <div>
               <label className={labelClass}>Nombre de la Institución:</label>
-              <input type="text" name="name" placeholder="Ej: Colegio San José" className={inputClass} value={formData.name} onChange={handleChange} required />
+              <input type="text" name="name" placeholder={ initialIntitutionData?.name } className={inputClass} value={formData.name} onChange={handleChange} required />
             </div>
             
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className={labelClass}>NIT / RUT:</label>
-                <input type="text" name="nit" placeholder="Ej: 900.123.456-7" className={inputClass} value={formData.nit} onChange={handleChange} required />
+                <label className={labelClass}>NIT:</label>
+                <input type="text" name="nit" placeholder={ initialIntitutionData?.nit } className={inputClass} value={formData.nit} onChange={handleChange} required />
               </div>
               <div>
                 <label className={labelClass}>Estado:</label>
@@ -136,17 +181,17 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className={labelClass}>Departamento / Estado:</label>
-                <input type="text" name="department" placeholder="Ej: Cundinamarca" className={inputClass} value={formData.department} onChange={handleChange} required />
+                <input type="text" name="department" placeholder={ initialIntitutionData?.department } className={inputClass} value={formData.department} onChange={handleChange} required />
               </div>
               <div>
                 <label className={labelClass}>Ciudad / Municipio:</label>
-                <input type="text" name="city" placeholder="Ej: Bogotá D.C." className={inputClass} value={formData.city} onChange={handleChange} required />
+                <input type="text" name="city" placeholder={ initialIntitutionData?.city } className={inputClass} value={formData.city} onChange={handleChange} required />
               </div>
             </div>
             
             <div>
               <label className={labelClass}>Dirección Física:</label>
-              <input type="text" name="address" placeholder="Ej: Carrera 10 # 20-30 Sur" className={inputClass} value={formData.address} onChange={handleChange} required />
+              <input type="text" name="address" placeholder={ initialIntitutionData?.address } className={inputClass} value={formData.address} onChange={handleChange} required />
             </div>
           </div>
 
@@ -159,7 +204,7 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
                 <label className={labelClass}>Misión Institucional:</label>
                 <textarea 
                   name="mission" 
-                  placeholder="Redacte la misión de la institución educativa..." 
+                  placeholder={ initialIntitutionData?.mission }
                   className={textareaClass} 
                   value={formData.mission} 
                   onChange={handleChange} 
@@ -169,7 +214,7 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
                 <label className={labelClass}>Visión Institucional:</label>
                 <textarea 
                   name="vision" 
-                  placeholder="Redacte la visión a futuro de la institución..." 
+                  placeholder={ initialIntitutionData?.vision } 
                   className={textareaClass} 
                   value={formData.vision} 
                   onChange={handleChange} 
@@ -190,9 +235,13 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
                 <label className={labelClass}>Logo Institucional</label>
                 <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center overflow-hidden border-4 border-blue-900/10">
                   {logoFile ? (
-                    <span className="text-xs font-bold text-blue-900">{logoFile.name}</span>
-                  ) : (
                     <Building2 className="w-10 h-10 text-blue-900/30" />
+                  ) : (
+                    <img 
+                        src={ logoUrl } 
+                        alt="Foto de perfil" 
+                        
+                      />
                   )}
                 </div>
                 <input 
@@ -207,11 +256,17 @@ const InstitutionProfileForm = ({ initialData }: Props) => {
               <div className="p-4 border-2 border-dashed border-blue-900/20 rounded-2xl flex flex-col items-center justify-center text-center gap-3 hover:bg-blue-900/5 transition-colors">
                 <label className={labelClass}>Banner Principal</label>
                 <div className="w-full h-24 bg-white rounded-xl shadow-md flex items-center justify-center overflow-hidden border-4 border-blue-900/10">
-                  {bannerFile ? (
-                    <span className="text-xs font-bold text-blue-900">{bannerFile.name}</span>
-                  ) : (
-                    <ImageIcon className="w-10 h-10 text-blue-900/30" />
-                  )}
+                  {
+                    bannerFile ? (
+                      <ImageIcon className="w-10 h-10 text-blue-900/30" />
+                    ) : (
+                      <img 
+                        src={ bannerUrl } 
+                        alt="Banner de la Institución"
+                        className="w-full h-full object-cover"
+                      />
+                    )
+                  }
                 </div>
                 <input 
                   type="file" 

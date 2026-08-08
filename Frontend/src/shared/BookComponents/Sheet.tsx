@@ -31,11 +31,75 @@ import GuardianGrades from "@/Roles/Guardian/GuardianGrades";
 import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
 import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
 
+interface institutionInfo {
+  id: number;
+  nit: string;
+  name: string;
+  department: string;
+  city: string;
+  address: string;
+  vision: string;
+  mission: string;
+  logo: string;
+  banner: string;
+  status: string;
+  createdAt: string | null;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
+
+interface userInfo {
+  id: number;
+  firstName: string;
+  lastName: string;
+  birthDate: string;
+  username: string;
+  password: string;
+  admin: boolean;
+  status: string;
+  createdAt: string;
+  updatedAt: string | null;
+  deletedAt: string | null;
+}
+
+interface roleInfo {
+  id: number;
+  name: string;
+}
+
+interface contactInfo {
+  id: number;
+  documentType: string;
+  identification: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  address: string;
+  userId: number;
+}
+interface emergencyContactInfo {
+  id: number;
+  documentType: string;
+  identification: string;
+  email: string;
+  phoneNumber: string;
+  city: string;
+  address: string;
+  userId: number;
+}
+
 interface SliderProps {
+  institutionInfo: institutionInfo;
+  userInfo: userInfo;
+  roleInfo: roleInfo;
+  contactInfo: contactInfo;
+  emergencyContactInfo: emergencyContactInfo;
+  logoUrl: string;
+  bannerUrl: string;
   sections: string[];
 }
 
-const Sheet = ({ sections }: SliderProps) => {
+const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyContactInfo, logoUrl, bannerUrl, sections }: SliderProps) => {
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -46,7 +110,7 @@ const Sheet = ({ sections }: SliderProps) => {
       // Admin
 
       case "Perfil de la Institución":
-        return <InstitutionProfileForm />; 
+        return <InstitutionProfileForm initialIntitutionData={ institutionInfo } logoUrl={ logoUrl } bannerUrl={ bannerUrl } />; 
       case "Periodos Académicos":
         return <AcademicPeriodManager />; 
       case "Formulario de inscripción":

@@ -9,7 +9,7 @@ interface FormData {
     birthday: string;
     username: string;
     password: string;
-    is_admin: boolean;
+    admin: boolean;
     status: string;
   };
   institution: {
@@ -29,7 +29,7 @@ interface FormData {
     documentType: string;
     identification: string;
     email: string;
-    phone_number: string;
+    phoneNumber: string;
     city: string;
     address: string;
   };
@@ -38,7 +38,7 @@ interface FormData {
     lastName: string;
     relationship: string;
     email: string;
-    phone_number: string;
+    phoneNumber: string;
     city: string;
     address: string;
   }
@@ -55,7 +55,7 @@ export const FormInstitutions = () => {
       birthday: '',
       username: '',
       password: '',
-      is_admin: true,
+      admin: true,
       status: ''
     },
     institution: {
@@ -75,7 +75,7 @@ export const FormInstitutions = () => {
       documentType: '',
       identification: '',
       email: '',
-      phone_number: '',
+      phoneNumber: '',
       city: '',
       address: '',
     },
@@ -84,7 +84,7 @@ export const FormInstitutions = () => {
       lastName: '',
       relationship: '',
       email: '',
-      phone_number: '',
+      phoneNumber: '',
       city: '',
       address: '',
     }
@@ -188,14 +188,15 @@ export const FormInstitutions = () => {
 
       const data = await response.json();
 
+      console.log('Institución form:', formData);
       console.log('Institución creada:', data);
 
       setFormData({
-        user: { firstName: '', lastName: '', birthday: '', username: '', password: '', is_admin: true, status: '' },
+        user: { firstName: '', lastName: '', birthday: '', username: '', password: '', admin: true, status: '' },
         institution: { name: '', nit: '', department: '', city: '', address: '', status: '', vision: '', mission: '' },
         roles: { name: '' },
-        contact_info: { documentType: '', identification: '', email: '', phone_number: '', city: '', address: '' },
-        emergency_contacts: { firstName: '', lastName: '', relationship: '', email: '', phone_number: '', city: '', address: '' }
+        contact_info: { documentType: '', identification: '', email: '', phoneNumber: '', city: '', address: '' },
+        emergency_contacts: { firstName: '', lastName: '', relationship: '', email: '', phoneNumber: '', city: '', address: '' }
       });
 
       setLogoFile(null);
@@ -341,8 +342,8 @@ export const FormInstitutions = () => {
               </div>
 
               <div>
-                <label htmlFor="phone_number" className={labelStyle}>Número telefónico:</label>
-                <input type="text" id="phone_number" name="contact_info.phone_number" placeholder="Ej: 300-555-5555" className={inputStyle} value={formData.contact_info.phone_number} onChange={handleChange} />
+                <label htmlFor="phoneNumber" className={labelStyle}>Número telefónico:</label>
+                <input type="text" id="phoneNumber" name="contact_info.phoneNumber" placeholder="Ej: 300-555-5555" className={inputStyle} value={formData.contact_info.phoneNumber} onChange={handleChange} />
               </div>
 
               <div>
@@ -391,7 +392,7 @@ export const FormInstitutions = () => {
 
               <div>
                 <label htmlFor="emergencyPhone" className={labelStyle}>Número telefónico:</label>
-                <input type="text" id="emergencyPhone" name="emergency_contacts.phone_number" placeholder="Ej: 300-555-5555" className={inputStyle} value={formData.emergency_contacts.phone_number} onChange={handleChange} />
+                <input type="text" id="emergencyPhone" name="emergency_contacts.phoneNumber" placeholder="Ej: 300-555-5555" className={inputStyle} value={formData.emergency_contacts.phoneNumber} onChange={handleChange} />
               </div>
 
               <div className="sm:col-span-2">
