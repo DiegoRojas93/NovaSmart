@@ -73,4 +73,17 @@ public class FileStorageService {
             throw new RuntimeException("Error al cargar el archivo: " + filename, e);
         }
     }
+
+    public void deleteFile(String filename) {
+        try {
+            if (filename != null && !filename.trim().isEmpty()) {
+                Path file = rootLocation.resolve(filename).normalize().toAbsolutePath();
+                Files.deleteIfExists(file);
+                System.out.println("Archivo eliminado del storage: " + filename);
+            }
+        } catch (IOException e) {
+            System.err.println("No se pudo eliminar el archivo antiguo: " + filename);
+            // No lanzamos excepción para no interrumpir el flujo si falla el borrado físico
+        }
+    }
 }

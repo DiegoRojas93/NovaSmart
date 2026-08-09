@@ -177,10 +177,13 @@ export const FormInstitutions = () => {
       if (photoFile) dataToSend.append("photo", photoFile);
 
 
+      console.log("Hola")
+
       const response = await fetch(`${ apiUrl }/institutions/inscription`, {
         method: 'POST',
         body: dataToSend
       });
+      console.log(response)
 
       if (!response.ok) {
         throw new Error('Error al crear institución');

@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -61,7 +62,53 @@ public class InstitutionsService implements IInstitutionsInfoService {
             throw new ValidationException( result );
         }
 
+        System.out.println("intitutionService = " + institutionInfo.toString());
+
         return institutionRepository.save(institutionInfo);
+    }
+
+    // Cuando hay archivos
+    @Override
+    @Transactional
+    public InstitutionModel save(InstitutionModel institutionInfo, MultipartFile logo, MultipartFile banner) {
+
+        // 0. Buscamos la información antigua en la base de datos para saber qué borrar
+        InstitutionModel existingInstitution = null;
+        if (institutionInfo.getId() != null) {
+            existingInstitution = institutionRepository.findById(institutionInfo.getId()).orElse(null);
+        }
+
+        // 1. Lógica del Logo
+        if (logo != null && !logo.isEmpty()) {
+            // Si hay un logo nuevo Y existía uno viejo, borramos el viejo del disco
+            if (existingInstitution != null && existingInstitution.getLogo() != null) {
+                fileStorageService.deleteFile(existingInstitution.getLogo());
+            }
+
+            String logoPath = fileStorageService.store(logo);
+            institutionInfo.setLogo(logoPath);
+        } else if (existingInstitution != null) {
+            // Si no envían logo nuevo, conservamos la ruta del viejo para no perderlo
+            institutionInfo.setLogo(existingInstitution.getLogo());
+        }
+
+        // 2. Lógica del Banner
+        if (banner != null && !banner.isEmpty()) {
+            // Si hay un banner nuevo Y existía uno viejo, borramos el viejo del disco
+            if (existingInstitution != null && existingInstitution.getBanner() != null) {
+                fileStorageService.deleteFile(existingInstitution.getBanner());
+            }
+
+            String bannerPath = fileStorageService.store(banner);
+            institutionInfo.setBanner(bannerPath);
+        } else if (existingInstitution != null) {
+            // Si no envían banner nuevo, conservamos la ruta del viejo para no perderlo
+            institutionInfo.setBanner(existingInstitution.getBanner());
+        }
+
+        // 3. Delegamos el guardado final al método save original de ESTA clase
+        // IMPORTANTE: Llamar a this.save(institutionInfo) en vez del repository[cite: 9]
+        return this.save(institutionInfo);
     }
 
     @Override

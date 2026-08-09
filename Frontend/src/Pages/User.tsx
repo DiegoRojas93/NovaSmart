@@ -42,35 +42,37 @@ const User = () => {
   // 3. Toggle del sidebar
   const toggleSidevar = () => setIsSidebarOpen(prev => !prev);
 
+  // --- NUEVA FUNCIÓN REUTILIZABLE PARA BUSCAR DATOS ---
+  const fetchUserData = async (showLoading = true) => {
+    if (showLoading) setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) throw new Error("No tienes acceso. Por favor, inicia sesión.");
+
+      const headers = {
+        "Authorization": `Bearer ${token}`,
+        "Content-Type": "application/json"
+      };
+
+      const userResponse = await fetch(`${apiUrl}/user1/${userId}`, { method: "GET", headers });
+
+      if (!userResponse.ok) throw new Error("No se pudo cargar la información del usuario");
+      
+      const userData = await userResponse.json();
+
+      setProfileInfoData(userData);
+
+    } catch (e: any) {
+      setError(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // 4. Efecto inicial
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-
-        if (!token) throw new Error("No tienes acceso. Por favor, inicia sesión.");
-
-        const headers = {
-          "Authorization": `Bearer ${token}`,
-          "Content-Type": "application/json"
-        };
-
-        const userResponse = await fetch(`${apiUrl}/user1/${userId}`, { method: "GET", headers });
-
-        if (!userResponse.ok) throw new Error("No se pudo cargar la información del usuario");
-        
-        const userData = await userResponse.json();
-
-        setProfileInfoData(userData);
-
-      } catch (e: any) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
+    fetchUserData();
   }, [ apiUrl, userId ]);
 
   const handleLogout = ( rute: string = "/" ) => {
@@ -89,33 +91,24 @@ const User = () => {
 
 
   // 1. Desestructuramos el objeto profileInfoData para obtner la información separada
-
   const { institution, user, contact_info, roles, emergency_contacts } = profileInfoData;
 
   // 2. Obtenemos las imagenes de la instititución y del usuario desde la API
-
   const logoUrl = `${apiUrl}/files/${institution?.logo}`,
     bannerUrl = `${apiUrl}/files/${institution?.banner}`,
     photoUrl = `${apiUrl}/files/${user?.photo}`;
 
   // 3. Obtengo el rol del usuario desde la información del perfil dada en la base de datos
-
   const { name: userRole } = roles;
   
   // 4. Obtengo las páginas normales para ese rol
-
   let currentRolePages = typedRolesData[userRole]?.sidebarAndPages || [];
 
   // 5. Verificamos si es admin en la base de datos
-
   if ( user?.admin ) {
-
     // Obtenemos las páginas exclusivas de administrador
-
     const adminPages = typedRolesData["Admin"]?.sidebarAndPages || [];
-    
     // Se fusiona ambos menús (Primero ponemos las de admin, y luego las de su rol)
-
     currentRolePages = [ ...adminPages, ...currentRolePages ];
   }
 
@@ -192,6 +185,8 @@ const User = () => {
                     logoUrl={ logoUrl }
                     bannerUrl={ bannerUrl }
                     sections={sectionsArray}
+                    // --- ENVIAMOS LA FUNCIÓN DE ACTUALIZACIÓN AL COMPONENTE HIJO ---
+                    onRefresh={() => fetchUserData(false)}
                   />
                 </Sheets>
               );

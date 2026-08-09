@@ -4,7 +4,9 @@ import com.NovaSmart.Backend.Model.Components.InstitutionModel;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IInstitutionsInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
@@ -32,10 +34,16 @@ public class InstitutionsController {
         }
     }
 
-    @PutMapping("/{id}")
-    public InstitutionModel update(@PathVariable Long id, @RequestBody InstitutionModel institutionModel) {
+    @PostMapping(value = "/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public InstitutionModel update(
+        @PathVariable Long id,
+        @RequestPart("data") InstitutionModel institutionModel, // Recibe el Blob con el JSON
+        @RequestPart(value = "logo", required = false) MultipartFile logo, // Recibe el logo (opcional)
+        @RequestPart(value = "banner", required = false) MultipartFile banner // Recibe el banner (opcional)
+    ) {
         institutionModel.setId(id);
-        return institutionsInfoService.save(institutionModel);
+        System.out.println(institutionModel.toString());
+        return institutionsInfoService.save(institutionModel, logo, banner);
     }
 
     @DeleteMapping("/{id}")

@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Repositories.Interfaces;
+package com.NovaSmart.Backend.Repositories.Components.Interfaces;
 
 import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
 
@@ -8,6 +8,6 @@ import java.util.Optional;
 public interface IAcademyPeriodRepository {
     AcademyPeriodModel save(AcademyPeriodModel period);
     Optional<AcademyPeriodModel> findById(Long id);
-    List<AcademyPeriodModel> findAll();
+    List<AcademyPeriodModel> findAllByInstitutionId(Long institutionId);
     void deleteById(Long id);
 }

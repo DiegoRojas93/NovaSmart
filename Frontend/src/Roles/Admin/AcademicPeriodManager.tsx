@@ -1,35 +1,63 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
+import { useState, useEffect, type ChangeEvent, type SubmitEvent } from "react";
 import { Save, CalendarRange, Plus, Edit2, CalendarDays, X, CheckCircle2 } from "lucide-react";
+import { ModalComponent } from "@/shared/Basics/ModalComponent";
 
-// --- INTERFACES BASADAS EN LA BASE DE DATOS ---
+// --- INTERFACES BASADAS EN EL BACKEND ---
 export interface AcademicPeriod {
-  id?: string;
+  id?: number;
   name: string;
   year: number | "";
-  start_date: string;
-  end_date: string;
+  startDate: string; 
+  endDate: string;
 }
-
-// --- DATOS SIMULADOS ---
-const mockPeriods: AcademicPeriod[] = [
-  { id: "1", name: "2025-II", year: 2025, start_date: "2025-07-01", end_date: "2025-11-30" },
-  { id: "2", name: "2026-I", year: 2026, start_date: "2026-02-01", end_date: "2026-06-30" },
-];
 
 const defaultFormData: AcademicPeriod = {
   name: "",
-  year: new Date().getFullYear(), // Sugiere el año actual
-  start_date: "",
-  end_date: ""
+  year: new Date().getFullYear(),
+  startDate: "",
+  endDate: ""
 };
 
 const AcademicPeriodManager = () => {
   // --- ESTADOS ---
-  const [periods, setPeriods] = useState<AcademicPeriod[]>(mockPeriods);
-  const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingData, setEditingData] = useState<AcademicPeriod | null>(null);
-  const [formData, setFormData] = useState<AcademicPeriod>(defaultFormData);
-  const [isSaving, setIsSaving] = useState(false);
+  const [periods, setPeriods] = useState<AcademicPeriod[]>([]), 
+    [isFormOpen, setIsFormOpen] = useState(false),
+    [editingData, setEditingData] = useState<AcademicPeriod | null>(null),
+    [formData, setFormData] = useState<AcademicPeriod>(defaultFormData),
+    [isSaving, setIsSaving] = useState(false);
+
+  // --- ESTADOS PARA EL MODAL ---
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    type: "success" as "success" | "error",
+    title: "",
+    message: "",
+    errorCode: null as number | null
+  });
+
+  const closeModal = () => setModalConfig(prev => ({ ...prev, isOpen: false }));
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+  // --- FUNCIÓN PARA CARGAR LOS PERIODOS ---
+  const fetchPeriods = async () => {
+    try {
+      const response = await fetch(`${apiUrl}/academic-periods`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setPeriods(data);
+      }
+    } catch (error) {
+      console.error("Error al cargar los periodos académicos:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPeriods();
+  }, []);
 
   // --- MANEJADORES DE VISTA ---
   const handleOpenCreate = () => {
@@ -58,26 +86,57 @@ const AcademicPeriodManager = () => {
     }));
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
 
-    console.log(editingData ? "Actualizando Periodo:" : "Creando Periodo:", formData);
-
-    // Simulación de guardado
-    setTimeout(() => {
-      alert(editingData ? "¡Periodo actualizado!" : "¡Periodo creado exitosamente!");
+    try {
+      const method = editingData ? 'PUT' : 'POST';
       
-      // Actualizamos la tabla localmente por ahora
-      if (editingData) {
-        setPeriods(periods.map(p => p.id === formData.id ? formData : p));
-      } else {
-        setPeriods([...periods, { ...formData, id: Date.now().toString() }]);
+      // ¡CORRECCIÓN AQUÍ! Usamos editingData.id para editar el periodo correcto
+      const url = editingData 
+        ? `${apiUrl}/academic-periods/${editingData.id}` 
+        : `${apiUrl}/academic-periods`;
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`,
+          'Content-Type': 'application/json' 
+        },
+        body: JSON.stringify(formData) 
+      });
+
+      if (!response.ok) {
+        const error = new Error("Error al procesar el periodo académico");
+        (error as any).status = response.status; 
+        throw error;
       }
 
-      setIsSaving(false);
+      await fetchPeriods();
       handleCloseForm();
-    }, 1000);
+
+      setModalConfig({
+        isOpen: true,
+        type: "success",
+        title: "¡Éxito!",
+        message: editingData ? "Periodo académico actualizado correctamente." : "Periodo académico creado correctamente.",
+        errorCode: null
+      });
+
+    } catch (error: any) {
+      console.error(error);
+      
+      setModalConfig({
+        isOpen: true,
+        type: "error",
+        title: "Algo salió mal",
+        message: "El periodo académico no pudo ser procesado. Por favor, inténtelo de nuevo.",
+        errorCode: error.status || null
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   // --- CLASES ESTILO CUADERNO ---
@@ -89,7 +148,6 @@ const AcademicPeriodManager = () => {
   return (
     <div className="w-full flex flex-col gap-6 text-blue-950 pb-10 px-2 md:px-4 animate-in fade-in duration-500">
       
-      {/* CABECERA */}
       <div className="mb-2 flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
         <div>
           <h2 className="text-3xl font-black text-blue-950 mb-2">Periodos Académicos</h2>
@@ -108,7 +166,6 @@ const AcademicPeriodManager = () => {
         )}
       </div>
 
-      {/* VISTA 1: TABLA DE PERIODOS (Se oculta si el formulario está abierto) */}
       {!isFormOpen && (
         <div className={bentoCardClass}>
           <div className="overflow-x-auto">
@@ -125,10 +182,9 @@ const AcademicPeriodManager = () => {
               </thead>
               <tbody>
                 {periods.map((p) => {
-                  // Lógica visual simple para ver si el periodo está activo hoy
                   const today = new Date();
-                  const start = new Date(p.start_date);
-                  const end = new Date(p.end_date);
+                  const start = new Date(p.startDate);
+                  const end = new Date(p.endDate);
                   const isActive = today >= start && today <= end;
 
                   return (
@@ -137,8 +193,8 @@ const AcademicPeriodManager = () => {
                         <CalendarDays className="w-4 h-4 text-blue-900/60" /> {p.name}
                       </td>
                       <td className="py-4 px-2 font-medium text-blue-900/80">{p.year}</td>
-                      <td className="py-4 px-2 font-medium">{p.start_date}</td>
-                      <td className="py-4 px-2 font-medium">{p.end_date}</td>
+                      <td className="py-4 px-2 font-medium">{p.startDate}</td>
+                      <td className="py-4 px-2 font-medium">{p.endDate}</td>
                       <td className="py-4 px-2 text-center">
                         {isActive ? (
                           <span className="inline-flex items-center gap-1 px-2 py-1 bg-green-100 text-green-800 text-[10px] font-black uppercase tracking-wider rounded-full">
@@ -162,13 +218,19 @@ const AcademicPeriodManager = () => {
                     </tr>
                   )
                 })}
+                {periods.length === 0 && (
+                  <tr>
+                    <td colSpan={6} className="text-center py-6 text-blue-900/50 font-medium">
+                      No hay periodos académicos registrados.
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
         </div>
       )}
 
-      {/* VISTA 2: FORMULARIO (Creación / Edición) */}
       {isFormOpen && (
         <form onSubmit={handleSubmit} className="flex flex-col gap-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
           
@@ -187,7 +249,6 @@ const AcademicPeriodManager = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             
-            {/* CAJA 1: Datos Base */}
             <div className={bentoCardClass}>
               <h3 className={bentoTitleClass}><CalendarRange className="w-5 h-5"/> Identificación</h3>
               
@@ -219,7 +280,6 @@ const AcademicPeriodManager = () => {
               </div>
             </div>
 
-            {/* CAJA 2: Fechas */}
             <div className={bentoCardClass}>
               <h3 className={bentoTitleClass}><CalendarDays className="w-5 h-5"/> Cronograma</h3>
               
@@ -228,9 +288,9 @@ const AcademicPeriodManager = () => {
                   <label className={labelClass}>Fecha de Inicio:</label>
                   <input 
                     type="date" 
-                    name="start_date" 
+                    name="startDate" 
                     className={inputClass} 
-                    value={formData.start_date} 
+                    value={formData.startDate} 
                     onChange={handleChange} 
                     required 
                   />
@@ -239,9 +299,9 @@ const AcademicPeriodManager = () => {
                   <label className={labelClass}>Fecha de Finalización:</label>
                   <input 
                     type="date" 
-                    name="end_date" 
+                    name="endDate" 
                     className={inputClass} 
-                    value={formData.end_date} 
+                    value={formData.endDate} 
                     onChange={handleChange} 
                     required 
                   />
@@ -251,7 +311,6 @@ const AcademicPeriodManager = () => {
 
           </div>
 
-          {/* BOTÓN "SELLO" */}
           <div className="flex justify-end mt-4">
             <button 
               type="submit" 
@@ -270,6 +329,15 @@ const AcademicPeriodManager = () => {
         </form>
       )}
 
+      {/* MODAL REUTILIZABLE */}
+      <ModalComponent
+        isOpen={modalConfig.isOpen}
+        onClose={closeModal}
+        type={modalConfig.type}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        errorCode={modalConfig.errorCode}
+      />
     </div>
   );
 };

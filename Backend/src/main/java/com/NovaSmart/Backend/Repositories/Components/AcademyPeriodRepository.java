@@ -1,7 +1,7 @@
-package com.NovaSmart.Backend.Repositories;
+package com.NovaSmart.Backend.Repositories.Components;
 
 import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
-import com.NovaSmart.Backend.Repositories.Interfaces.IAcademyPeriodRepository;
+import com.NovaSmart.Backend.Repositories.Components.Interfaces.IAcademyPeriodRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -33,6 +33,8 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
         java.sql.Date endDate = rs.getDate("end_date");
         model.setEndDate(endDate != null ? endDate.toLocalDate() : null);
 
+        model.setInstitutionId(rs.getLong("institution_id"));
+
         return model;
     };
 
@@ -40,7 +42,7 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
     public AcademyPeriodModel save(AcademyPeriodModel period) {
         if (period.getId() == null) {
 
-            String query = "INSERT INTO academic_periods (name, year, start_date, end_date) VALUES (?, ?, ?, ?)";
+            String query = "INSERT INTO academic_periods (name, year, start_date, end_date, institution_id) VALUES (?, ?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -50,17 +52,20 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
                 ps.setShort(2, period.getYear());
                 ps.setDate(3, period.getStartDate() != null ? java.sql.Date.valueOf(period.getStartDate()) : null);
                 ps.setDate(4, period.getEndDate() != null ? java.sql.Date.valueOf(period.getEndDate()) : null);
+                ps.setLong(5, period.getInstitutionId());
                 return ps;
             }, keyHolder);
 
             period.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         } else {
-            String query = "UPDATE academic_periods SET name = ?, year = ?, start_date = ?, end_date = ? WHERE id = ?";
+            String query = "UPDATE academic_periods SET name = ?, year = ?, start_date = ?, end_date = ?, institution_id = ? WHERE id = ?";
+
             jdbcTemplate.update(query,
                 period.getName(),
                 period.getYear(),
                 period.getStartDate() != null ? java.sql.Date.valueOf(period.getStartDate()) : null,
                 period.getEndDate() != null ? java.sql.Date.valueOf(period.getEndDate()) : null,
+                period.getInstitutionId(),
                 period.getId()
             );
         }
@@ -78,9 +83,9 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
     }
 
     @Override
-    public List<AcademyPeriodModel> findAll() {
-        String query = "SELECT * FROM academic_periods";
-        return jdbcTemplate.query(query, rowMapper);
+    public List<AcademyPeriodModel> findAllByInstitutionId(Long institutionId) {
+        String query = "SELECT * FROM academic_periods WHERE institution_id = ?";
+        return jdbcTemplate.query(query, rowMapper, institutionId);
     }
 
     @Override

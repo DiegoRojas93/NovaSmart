@@ -2,7 +2,7 @@ package com.NovaSmart.Backend.Service.Components;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
 import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
-import com.NovaSmart.Backend.Repositories.Interfaces.IAcademyPeriodRepository;
+import com.NovaSmart.Backend.Repositories.Components.Interfaces.IAcademyPeriodRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IAcademyPeriodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -43,8 +43,8 @@ public class AcademyPeriodService implements IAcademyPeriodService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AcademyPeriodModel> findAll() {
-        return academyPeriodRepository.findAll();
+    public List<AcademyPeriodModel> findAllByInstitutionId(Long institutionId) {
+        return academyPeriodRepository.findAllByInstitutionId(institutionId);
     }
 
     @Override

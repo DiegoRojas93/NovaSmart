@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Repositories;
+package com.NovaSmart.Backend.Repositories.Components;
 
 import com.NovaSmart.Backend.Model.Enums.Institution_status;
 import com.NovaSmart.Backend.Model.Components.InstitutionModel;
@@ -97,9 +97,6 @@ public class InstitutionRepository implements IInstitutionRepository {
             institutionInfo.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
 
         } else {
-//            String query = "UPDATE institutions SET " +
-//                "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo, banner, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
-//                "WHERE id = ?";
 
             String query = "UPDATE institutions SET " +
                 "nit = ?, name = ?, department = ?, city = ?, address = ?, vision = ?, mission = ?, logo = ?, banner = ?, status = CAST(? AS institution_status), created_at = ?, updated_at = ?, deleted_at = ? " +
@@ -113,7 +110,6 @@ public class InstitutionRepository implements IInstitutionRepository {
                 institutionInfo.getAddress(),
                 institutionInfo.getVision(),
                 institutionInfo.getMission(),
-                // --- NUEVO: Valores para el UPDATE ---
                 institutionInfo.getLogo(),
                 institutionInfo.getBanner(),
 

@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Repositories;
+package com.NovaSmart.Backend.Repositories.Components;
 
 import com.NovaSmart.Backend.Model.Components.GuardianModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IGuardianRepository;

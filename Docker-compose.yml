@@ -35,33 +35,6 @@ services:
       - ./DB/pgadmin:/var/lib/pgadmin
     networks:
       - novasmart_net
-
-  # backend:
-  #   build:
-  #     context: ./Backend
-  #     dockerfile: Dockerfile
-  #   container_name: novasmart_backend
-  #   restart: on-failure
-  #   environment:
-  #     - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-novasmart_db}
-  #     - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
-  #     - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASSWORD}
-  #     - SERVER_PORT=${APP_PORT:-8080}
-  #   ports:
-  #     - "${APP_PORT:-8080}:${APP_PORT:-8080}"
-  #   networks:
-  #     - novasmart_net
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
-
-
-
-
-
-
-
-
   backend:
     build:
       context: ./Backend

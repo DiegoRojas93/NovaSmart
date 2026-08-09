@@ -1,19 +1,10 @@
-import { useState, useEffect, useRef, type ChangeEvent, type FormEvent } from "react";
+import { useState, useEffect, useRef, type ChangeEvent, type SubmitEvent } from "react";
 import { Save, Building2, Map, BookOpen, Image as ImageIcon } from "lucide-react";
 
-// --- INTERFACES BASADAS EN LA BASE DE DATOS ---
-// export interface InstitutionFormData {
-//   id?: string;
-//   nit: string;
-//   name: string;
-//   department: string;
-//   city: string;
-//   address: string;
-//   vision: string;
-//   mission: string;
-//   status: string; // ENUM: 'ACTIVA', 'INACTIVA'
-// }
+// Importamos el componente modal reutilizable (Ajusta la ruta según tu proyecto)
+import { ModalComponent } from "../../shared/Basics/ModalComponent";
 
+// --- INTERFACES BASADAS EN LA BASE DE DATOS ---
 interface institutionFormData {
   id?: number;
   nit: string;
@@ -31,30 +22,13 @@ interface institutionFormData {
   deletedAt: string | null;
 }
 
-interface logoUrl {
-  logoUrl: string
-}
-
-interface bannerUrl {
-  bannerUrl: string
-}
-
 interface Props {
   initialIntitutionData?: institutionFormData | null;
   logoUrl: string;
   bannerUrl: string;
+  // --- AGREGAMOS EL PROP DE REFRESH ---
+  onRefresh?: () => void;
 }
-
-// const defaultFormData: InstitutionFormData = {
-//   nit: "",
-//   name: "",
-//   department: "",
-//   city: "",
-//   address: "",
-//   vision: "",
-//   mission: "",
-//   status: "ACTIVA"
-// };
 
 const defaultFormData: institutionFormData = {
   nit: "",
@@ -72,7 +46,7 @@ const defaultFormData: institutionFormData = {
   deletedAt: ""
 };
 
-const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: Props) => {
+const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl, onRefresh }: Props) => {
 
   const [isSaving, setIsSaving] = useState(false),
     [formData, setFormData] = useState<institutionFormData>(defaultFormData);
@@ -83,15 +57,24 @@ const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: P
     [logoFile, setLogoFile] = useState<File | null>(null),
     [bannerFile, setBannerFile] = useState<File | null>(null);
 
+  // --- ESTADOS PARA EL MODAL REUTILIZABLE ---
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false,
+    type: "success" as "success" | "error",
+    title: "",
+    message: "",
+    errorCode: null as number | null
+  });
+
+  const closeModal = () => setModalConfig(prev => ({ ...prev, isOpen: false }));
+
   // --- EFECTO PARA CARGA INICIAL ---
   useEffect(() => {
     if (initialIntitutionData) {
       setFormData(initialIntitutionData);
     } else {
-      // En un caso real, aquí harías un fetch() a tu API para traer la institución principal
       setFormData(defaultFormData);
     }
-    console.log(initialIntitutionData)
   }, [initialIntitutionData]);
 
   // --- MANEJADORES ---
@@ -108,23 +91,75 @@ const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: P
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSaving(true);
 
-    const payload = {
-      ...formData,
-      // Los archivos se enviarían a través de un FormData (multipart/form-data) en la petición real
-    };
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-    console.log("Actualizando Perfil de la Institución:", payload);
-    if (logoFile) console.log("Nuevo Logo:", logoFile.name);
-    if (bannerFile) console.log("Nuevo Banner:", bannerFile.name);
+      const dataToSend = new FormData();
+      
+      dataToSend.append(
+        "data", 
+        new Blob([JSON.stringify(formData)], { type: "application/json" })
+      );
 
-    setTimeout(() => {
-      alert("¡Perfil institucional actualizado exitosamente!");
+      if (logoFile) dataToSend.append("logo", logoFile);
+      if (bannerFile) dataToSend.append("banner", bannerFile);
+
+      const response = await fetch(`${ apiUrl }/institutions/${ initialIntitutionData?.id }`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem("token")}`
+          // Se omite Content-Type para que el navegador genere el boundary automáticamente
+        },
+        body: dataToSend
+      });
+
+      // ¡CAPTURAMOS EL CÓDIGO HTTP SI HAY UN ERROR!
+      if (!response.ok) {
+        const error = new Error("Error al actualizar institución");
+        (error as any).status = response.status; 
+        throw error;
+      }
+
+      const data = await response.json();
+
+      // Limpieza de campos de archivo
+      setLogoFile(null);
+      setBannerFile(null);
+      if (logoInputRef.current) logoInputRef.current.value = "";
+      if (bannerInputRef.current) bannerInputRef.current.value = "";
+
+      // --- LLAMAMOS A LA FUNCIÓN DEL PADRE PARA RECARGAR EL ESTADO GLOBAL ---
+      if (onRefresh) {
+        onRefresh();
+      }
+
+      // Mostramos Modal de Éxito
+      setModalConfig({
+        isOpen: true,
+        type: "success",
+        title: "¡Actualización exitosa!",
+        message: "El perfil de la institución se guardó correctamente.",
+        errorCode: null
+      });
+
+    } catch (error: any) {
+      console.error(error);
+      
+      // Mostramos Modal de Error inyectando el código HTTP capturado
+      setModalConfig({
+        isOpen: true,
+        type: "error",
+        title: "Algo salió mal",
+        message: "No se pudo actualizar la información de la institución.",
+        errorCode: error.status || null
+      });
+    } finally {
       setIsSaving(false);
-    }, 1000);
+    }
   };
 
   // --- CLASES CSS ESTILO CUADERNO ---
@@ -235,13 +270,9 @@ const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: P
                 <label className={labelClass}>Logo Institucional</label>
                 <div className="w-24 h-24 bg-white rounded-full shadow-md flex items-center justify-center overflow-hidden border-4 border-blue-900/10">
                   {logoFile ? (
-                    <Building2 className="w-10 h-10 text-blue-900/30" />
+                    <span className="text-xs font-bold text-blue-900 px-2 truncate w-full">{logoFile.name}</span>
                   ) : (
-                    <img 
-                        src={ logoUrl } 
-                        alt="Foto de perfil" 
-                        
-                      />
+                    <img src={ logoUrl } alt="Logo Institución" className="w-full h-full object-cover" />
                   )}
                 </div>
                 <input 
@@ -256,17 +287,11 @@ const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: P
               <div className="p-4 border-2 border-dashed border-blue-900/20 rounded-2xl flex flex-col items-center justify-center text-center gap-3 hover:bg-blue-900/5 transition-colors">
                 <label className={labelClass}>Banner Principal</label>
                 <div className="w-full h-24 bg-white rounded-xl shadow-md flex items-center justify-center overflow-hidden border-4 border-blue-900/10">
-                  {
-                    bannerFile ? (
-                      <ImageIcon className="w-10 h-10 text-blue-900/30" />
-                    ) : (
-                      <img 
-                        src={ bannerUrl } 
-                        alt="Banner de la Institución"
-                        className="w-full h-full object-cover"
-                      />
-                    )
-                  }
+                  {bannerFile ? (
+                    <span className="text-xs font-bold text-blue-900">{bannerFile.name}</span>
+                  ) : (
+                    <img src={ bannerUrl } alt="Banner Institución" className="w-full h-full object-cover" />
+                  )}
                 </div>
                 <input 
                   type="file" 
@@ -298,6 +323,16 @@ const InstitutionProfileForm = ({ initialIntitutionData, logoUrl, bannerUrl }: P
         </div>
 
       </form>
+
+      {/* MODAL REUTILIZABLE */}
+      <ModalComponent 
+        isOpen={modalConfig.isOpen}
+        onClose={closeModal}
+        type={modalConfig.type}
+        title={modalConfig.title}
+        message={modalConfig.message}
+        errorCode={modalConfig.errorCode}
+      />
     </div>
   );
 };

@@ -29,4 +29,8 @@ public class AcademyPeriodModel {
 
     @Column("end_date")
     private LocalDate endDate;
+
+    @Column("institution_id")
+    @NotNull(message = "La institución es obligatoria.")
+    private Long institutionId;
 }

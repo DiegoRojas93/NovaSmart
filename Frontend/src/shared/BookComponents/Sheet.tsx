@@ -97,9 +97,11 @@ interface SliderProps {
   logoUrl: string;
   bannerUrl: string;
   sections: string[];
+  // --- AGREGAMOS EL PROP A LA INTERFAZ ---
+  onRefresh?: () => void;
 }
 
-const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyContactInfo, logoUrl, bannerUrl, sections }: SliderProps) => {
+const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyContactInfo, logoUrl, bannerUrl, sections, onRefresh }: SliderProps) => {
 
   const [activeTab, setActiveTab] = useState(0);
 
@@ -110,9 +112,14 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       // Admin
 
       case "Perfil de la Institución":
-        return <InstitutionProfileForm initialIntitutionData={ institutionInfo } logoUrl={ logoUrl } bannerUrl={ bannerUrl } />; 
+        return <InstitutionProfileForm 
+                 initialIntitutionData={ institutionInfo } 
+                 logoUrl={ logoUrl } 
+                 bannerUrl={ bannerUrl } 
+                 onRefresh={ onRefresh } // --- PASAMOS EL PROP AL FORMULARIO ---
+               />; 
       case "Periodos Académicos":
-        return <AcademicPeriodManager />; 
+        return <AcademicPeriodManager/>; 
       case "Formulario de inscripción":
         return <FormInscription />; 
       case "Dashboard":
