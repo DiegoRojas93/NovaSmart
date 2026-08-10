@@ -2,7 +2,7 @@ package com.NovaSmart.Backend.Service.Components;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
 import com.NovaSmart.Backend.Model.Components.UserModel;
-import com.NovaSmart.Backend.Repositories.UserRepository;
+import com.NovaSmart.Backend.Repositories.Components.UserRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IUserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

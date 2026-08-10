@@ -12,7 +12,7 @@ interface Props {
   logoUrl?: string
 }
 
-const CardBannerComponent = ({ institution, logoUrl}: Props) => {
+const CardBannerComponent = ({ institution, logoUrl }: Props) => {
 
   const {
     name,

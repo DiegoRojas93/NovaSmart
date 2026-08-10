@@ -51,6 +51,16 @@ public class TeacherRepository implements ITeacherRepository {
     }
 
     @Override
+    public Optional<TeacherModel> findByProfession(String profession) {
+        String query = "SELECT * FROM teachers WHERE profession = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper, profession));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public List<TeacherModel> findAll() {
         String query = "SELECT * FROM teachers";
         return jdbcTemplate.query(query, rowMapper);

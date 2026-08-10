@@ -9,5 +9,6 @@ public interface IGuardianService {
     GuardianModel save(GuardianModel guardianModel);
     Optional<GuardianModel> findById(Long id);
     List<GuardianModel> findAll();
+    Optional<GuardianModel> findByProfession(String name);
     void deleteById(Long id);
 }

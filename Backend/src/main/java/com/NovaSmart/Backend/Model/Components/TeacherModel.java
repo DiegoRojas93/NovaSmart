@@ -13,7 +13,7 @@ public class TeacherModel {
     @Id
     private Long id;
 
-    @NotNull(message = "La profesión es obligatoria.")
-    @NotBlank(message = "La profesión no puede estar vacía.")
+//    @NotNull(message = "La profesión es obligatoria.")
+//    @NotBlank(message = "La profesión no puede estar vacía.")
     private String profession;
 }

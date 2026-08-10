@@ -9,5 +9,6 @@ public interface ITeacherRepository {
     TeacherModel save(TeacherModel teacherModel);
     Optional<TeacherModel> findById(Long id);
     List<TeacherModel> findAll();
+    Optional<TeacherModel> findByProfession(String profession);
     void deleteById(Long id);
 }

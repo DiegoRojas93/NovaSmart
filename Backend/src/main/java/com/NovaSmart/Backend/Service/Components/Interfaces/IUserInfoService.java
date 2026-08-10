@@ -1,5 +1,6 @@
 package com.NovaSmart.Backend.Service.Components.Interfaces;
 
+import com.NovaSmart.Backend.Model.Combinations.PersonalModel;
 import com.NovaSmart.Backend.Model.Components.UserModel;
 
 import java.util.List;
@@ -15,4 +16,5 @@ public interface IUserInfoService {
     void deleteById(Long id);
 
     List<UserModel> findByUserById(Long id);
+
 }

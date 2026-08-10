@@ -2,10 +2,10 @@ interface Props {
   firstName: string;
   lastName: string;
   rol: string;
-  foto: string;
+  banner: string;
 }
 
-const NotebookCover = ({ firstName, lastName, rol, foto }: Props) => (
+const NotebookCover = ({ firstName, lastName, rol, banner }: Props) => (
   <div 
     className="animate-page-turn relative w-full h-full bg-brand-primary-3 rounded-r-3xl rounded-l-md shadow-[10px_10px_15px_rgba(0,0,0,0.5)] flex items-center justify-center border-r-8 border-b-8 border-brand-primary-2/80 overflow-hidden"
     style={{
@@ -31,7 +31,7 @@ const NotebookCover = ({ firstName, lastName, rol, foto }: Props) => (
       <div className="w-full h-full border-2 border-dashed border-brand-secundary-5 p-6 sm:p-8 flex flex-col items-center justify-center bg-white relative">
         
         {/* --- FOTO DE LA INSTITUCIÓN (Estilo foto impresa pegada) --- */}
-        {foto && (
+        {banner && (
           <div className="relative mb-6 rotate-[3deg] hover:rotate-0 transition-transform duration-300">
             {/* Trozo de cinta adhesiva semitransparente */}
             <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-16 h-6 bg-white/50 backdrop-blur-[2px] shadow-[0_1px_2px_rgba(0,0,0,0.1)] rotate-[-5deg] z-10"></div>
@@ -39,8 +39,8 @@ const NotebookCover = ({ firstName, lastName, rol, foto }: Props) => (
             {/* Marco de la foto */}
             <div className="w-28 h-28 sm:w-32 sm:h-32 bg-white p-1 sm:p-2 border border-gray-200 shadow-md">
               <img 
-                src={foto} 
-                alt="Foto de la Institución" 
+                src={banner} 
+                alt="Banner de la Institución" 
                 className="w-full h-full object-cover bg-gray-100" 
               />
             </div>

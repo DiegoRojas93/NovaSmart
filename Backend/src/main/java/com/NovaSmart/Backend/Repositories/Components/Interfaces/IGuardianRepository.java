@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Repositories.Interfaces;
+package com.NovaSmart.Backend.Repositories.Components.Interfaces;
 
 import com.NovaSmart.Backend.Model.Components.GuardianModel;
 
@@ -9,5 +9,6 @@ public interface IGuardianRepository {
     GuardianModel save(GuardianModel guardianModel);
     Optional<GuardianModel> findById(Long id);
     List<GuardianModel> findAll();
+    Optional<GuardianModel> findByProfession(String profession);
     void deleteById(Long id);
 }

@@ -1,6 +1,6 @@
 package com.NovaSmart.Backend.Config;
 
-import com.NovaSmart.Backend.Repositories.UserRepository;
+import com.NovaSmart.Backend.Repositories.Components.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -2,7 +2,7 @@ package com.NovaSmart.Backend.RestController.Components;
 
 import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
 import com.NovaSmart.Backend.Model.Components.UserModel;
-import com.NovaSmart.Backend.Repositories.UserRepository;
+import com.NovaSmart.Backend.Repositories.Components.UserRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IAcademyPeriodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

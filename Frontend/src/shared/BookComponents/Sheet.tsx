@@ -30,6 +30,7 @@ import StudentAttendance from "@/Roles/Student/StudentAttendance";
 import GuardianGrades from "@/Roles/Guardian/GuardianGrades";
 import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
 import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
+import PersonnelManager from "@/Roles/Admin/PersonnelManager";
 
 interface institutionInfo {
   id: number;
@@ -116,12 +117,13 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
                  initialIntitutionData={ institutionInfo } 
                  logoUrl={ logoUrl } 
                  bannerUrl={ bannerUrl } 
-                 onRefresh={ onRefresh } // --- PASAMOS EL PROP AL FORMULARIO ---
+                 onRefresh={ onRefresh }
                />; 
       case "Periodos Académicos":
         return <AcademicPeriodManager/>; 
       case "Formulario de inscripción":
-        return <FormInscription />; 
+        // return <FormInscription />; 
+        return <PersonnelManager institutionId={ institutionInfo.id } />
       case "Dashboard":
         return <Dashboard />;
       case "Formulario de actualización":

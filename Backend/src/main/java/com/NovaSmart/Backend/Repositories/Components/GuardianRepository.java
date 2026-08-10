@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.Repositories.Components;
 
 import com.NovaSmart.Backend.Model.Components.GuardianModel;
-import com.NovaSmart.Backend.Repositories.Interfaces.IGuardianRepository;
+import com.NovaSmart.Backend.Repositories.Components.Interfaces.IGuardianRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -52,6 +52,16 @@ public class GuardianRepository implements IGuardianRepository {
     public List<GuardianModel> findAll() {
         String query = "SELECT * FROM guardians";
         return jdbcTemplate.query(query, rowMapper);
+    }
+
+    @Override
+    public Optional<GuardianModel> findByProfession(String profession) {
+        String query = "SELECT * FROM guardians WHERE profession = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(query, rowMapper, profession));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     @Override

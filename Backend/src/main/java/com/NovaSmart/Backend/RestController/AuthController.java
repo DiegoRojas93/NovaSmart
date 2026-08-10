@@ -1,7 +1,7 @@
 package com.NovaSmart.Backend.RestController;
 
 import com.NovaSmart.Backend.Model.Components.UserModel;
-import com.NovaSmart.Backend.Repositories.UserRepository;
+import com.NovaSmart.Backend.Repositories.Components.UserRepository;
 import com.NovaSmart.Backend.Security.JwtService;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

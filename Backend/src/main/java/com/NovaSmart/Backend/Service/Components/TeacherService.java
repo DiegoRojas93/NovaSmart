@@ -48,6 +48,11 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
+    public Optional<TeacherModel> findByProfession(String profession) {
+        return teacherRepository.findByProfession(profession);
+    }
+
+    @Override
     @Transactional
     public void deleteById(Long id) {
         teacherRepository.deleteById(id);

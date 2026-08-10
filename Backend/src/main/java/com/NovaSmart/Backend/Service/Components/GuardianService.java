@@ -2,7 +2,7 @@ package com.NovaSmart.Backend.Service.Components;
 
 import com.NovaSmart.Backend.Exception.ValidationException;
 import com.NovaSmart.Backend.Model.Components.GuardianModel;
-import com.NovaSmart.Backend.Repositories.Interfaces.IGuardianRepository;
+import com.NovaSmart.Backend.Repositories.Components.Interfaces.IGuardianRepository;
 import com.NovaSmart.Backend.Service.Components.Interfaces.IGuardianService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,6 +45,11 @@ public class GuardianService implements IGuardianService {
     @Transactional(readOnly = true)
     public List<GuardianModel> findAll() {
         return guardianRepository.findAll();
+    }
+
+    @Override
+    public Optional<GuardianModel> findByProfession(String name) {
+        return Optional.empty();
     }
 
     @Override

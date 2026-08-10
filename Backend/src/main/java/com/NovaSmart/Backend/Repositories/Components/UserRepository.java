@@ -1,5 +1,6 @@
-package com.NovaSmart.Backend.Repositories;
+package com.NovaSmart.Backend.Repositories.Components;
 
+import com.NovaSmart.Backend.Model.Combinations.PersonalModel;
 import com.NovaSmart.Backend.Model.Enums.User_status;
 import com.NovaSmart.Backend.Model.Components.UserModel;
 import com.NovaSmart.Backend.Repositories.Interfaces.IUserRepository;
@@ -57,6 +58,17 @@ public class UserRepository implements IUserRepository {
 
         return userModel;
     };
+
+//    private final RowMapper<PersonalModel> summaryRowMapper = (rs, rowNum) -> {
+//        return new PersonalModel(
+//            rs.getLong("id"),
+//            rs.getString("first_name"),
+//            rs.getString("last_name"),
+//            rs.getString("identification"),
+//            rs.getString("role_name"),
+//            rs.getString("status")
+//        );
+//    };
 
     @Override
     public UserModel save(UserModel userModel) {
@@ -163,4 +175,20 @@ public class UserRepository implements IUserRepository {
             return Optional.empty();
         }
     }
+
+//    // El método que hace la magia de cruzar las tablas
+//    public List<PersonalModel> findAllSummariesByInstitutionId(Long institutionId) {
+//        String query = """
+//            SELECT u.id, u.first_name, u.last_name, u.status,
+//                   r.name as role_name, c.identification
+//            FROM users u
+//            INNER JOIN user_roles ur ON u.id = ur.user_id
+//            INNER JOIN roles r ON ur.role_id = r.id
+//            LEFT JOIN contact_info c ON u.id = c.user_id
+//            WHERE u.institution_id = ?
+//            ORDER BY u.last_name ASC
+//            """;
+//
+//        return jdbcTemplate.query(query, summaryRowMapper, institutionId);
+//    }
 }

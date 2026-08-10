@@ -73,7 +73,7 @@ public class InstitutionInscriptionService implements IInstitutionInscription {
         }
         // 4. Guardamos el roleUser en el service
 
-        UserRoleModel savedUserRole = new UserRoleModel( user.getId(), role.getId() );
+        UserRoleModel savedUserRole = new UserRoleModel( user.getId(), savedRole.getId() );
 
         userRoleService.save( savedUserRole );
 

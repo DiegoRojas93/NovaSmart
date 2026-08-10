@@ -98,6 +98,8 @@ const User = () => {
     bannerUrl = `${apiUrl}/files/${institution?.banner}`,
     photoUrl = `${apiUrl}/files/${user?.photo}`;
 
+  console.log(profileInfoData)
+
   // 3. Obtengo el rol del usuario desde la información del perfil dada en la base de datos
   const { name: userRole } = roles;
   
@@ -163,7 +165,7 @@ const User = () => {
                     firstName={ user.firstName }
                     lastName={ user.lastName }
                     rol={ userRole } 
-                    foto={ photoUrl }
+                    banner={ bannerUrl }
                   />
                 );
               }
