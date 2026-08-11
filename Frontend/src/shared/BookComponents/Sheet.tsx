@@ -128,6 +128,8 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
         return <Dashboard />;
       case "Formulario de actualización":
         return <ProfileEditing />;
+      case "Vínculos Familiares":
+        return <FamilyLinksManager />;
       case "Dashboard 2":
         return <AcademicsDashboard />;
       case "Creación y asignación academica":
@@ -146,8 +148,6 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
         return <GlobalAttendanceReport />;
       case "Calificaciones":
         return <GlobalGradesReport />;
-      case "Vínculos Familiares":
-        return <FamilyLinksManager />;
 
       // Personal Docente
 
