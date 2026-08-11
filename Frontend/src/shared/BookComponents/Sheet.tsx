@@ -132,12 +132,12 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
         return <AcademicsDashboard />;
       case "Creación y asignación academica":
         return <AcademicsCreationForm />;
-      case "Docentes: Formulario de inscripción":
-        return <TeacherForm />;
-      case "Estudiantes: Formulario de inscripción":
-        return <StudentForm />;
-      case "Acudiente: Formulario de inscripción":
-        return <GuardianForm />;
+      // case "Docentes: Formulario de inscripción":
+      //   return <TeacherForm />;
+      // case "Estudiantes: Formulario de inscripción":
+      //   return <StudentForm />;
+      // case "Acudiente: Formulario de inscripción":
+      //   return <GuardianForm />;
       case "Horarios: Docentes":
         return <TeacherScheduleForm />;
       case "Horarios: Estudientes":

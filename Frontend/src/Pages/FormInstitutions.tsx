@@ -191,9 +191,6 @@ export const FormInstitutions = () => {
 
       const data = await response.json();
 
-      console.log('Institución form:', formData);
-      console.log('Institución creada:', data);
-
       setFormData({
         user: { firstName: '', lastName: '', birthday: '', username: '', password: '', admin: true, status: '' },
         institution: { name: '', nit: '', department: '', city: '', address: '', status: '', vision: '', mission: '' },

@@ -1,6 +1,8 @@
 package com.NovaSmart.Backend.Repositories.Combinations;
 
 import com.NovaSmart.Backend.Model.Combinations.InstitutionAndUserModel;
+import com.NovaSmart.Backend.Model.Combinations.PersonalModel;
+import com.NovaSmart.Backend.Model.Combinations.UserSummaryDTO;
 import com.NovaSmart.Backend.Model.Components.*;
 import com.NovaSmart.Backend.Model.Enums.Document_status;
 import com.NovaSmart.Backend.Model.Enums.Institution_status;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -210,6 +213,116 @@ public class UserFullProfile {
 
                 return Optional.empty(); // Si el usuario no existe
             }
+        }, userId);
+    }
+
+    public List<UserSummaryDTO> getAllPersonnelSummariesByInstitution(Long institutionId) {
+        String query = "SELECT " +
+            // Usuario
+            "u.id AS u_id, " +
+            "u.first_name AS u_first_name, " +
+            "u.last_name AS u_last_name, " +
+
+            // Contact info
+            "c.identification AS c_ident, " +
+
+            // Roles
+            "r.name AS r_name, " +
+
+            // Usuario
+            "u.status AS u_status " +
+            "FROM users u " +
+            "LEFT JOIN contact_info c ON u.id = c.user_id " +
+            "LEFT JOIN user_roles ur ON u.id = ur.user_id " +
+            "LEFT JOIN roles r ON ur.role_id = r.id " +
+            "WHERE u.institution_id = ? " +
+            "ORDER BY u.id DESC"; // Opcional: ordenar por los más recientes
+
+        return jdbcTemplate.query(query, (rs, rowNum) -> {
+            UserSummaryDTO dto = new UserSummaryDTO();
+            dto.setId(rs.getLong("u_id"));
+            dto.setFirstName(rs.getString("u_first_name"));
+            dto.setLastName(rs.getString("u_last_name"));
+            dto.setIdentification(rs.getString("c_ident"));
+            dto.setRoleName(rs.getString("r_name"));
+            dto.setStatus(rs.getString("u_status"));
+            return dto;
+        }, institutionId);
+    }
+
+    public Optional<PersonalModel> getPersonalModelById(Long userId) {
+        String query = "SELECT " +
+            "u.id AS u_id, u.first_name, u.last_name, u.birthday, u.username, u.password, u.is_admin, u.status, u.institution_id, " +
+            "r.name AS r_name, " +
+            "c.document_type, c.identification, c.email AS c_email, c.phone_number AS c_phone, c.city AS c_city, c.address AS c_address, " +
+            "e.first_name AS e_first_name, e.last_name AS e_last_name, e.relationship, e.email AS e_email, e.phone_number AS e_phone, e.city AS e_city, e.address AS e_address, " +
+            "COALESCE(t.profession, g.profession) AS profession " +
+            "FROM users u " +
+            "LEFT JOIN user_roles ur ON u.id = ur.user_id " +
+            "LEFT JOIN roles r ON ur.role_id = r.id " +
+            "LEFT JOIN contact_info c ON u.id = c.user_id " +
+            "LEFT JOIN emergency_contacts e ON u.id = e.user_id " +
+            "LEFT JOIN teachers t ON u.id = t.id " +
+            "LEFT JOIN guardians g ON u.id = g.id " +
+            "WHERE u.id = ?";
+
+        return jdbcTemplate.query(query, rs -> {
+            if (rs.next()) {
+                PersonalModel pm = new PersonalModel();
+                pm.setInstitutionId(rs.getLong("institution_id"));
+
+                // Mapear Usuario
+                UserModel user = new UserModel();
+                user.setId(rs.getLong("u_id"));
+                user.setFirstName(rs.getString("first_name"));
+                user.setLastName(rs.getString("last_name"));
+
+                java.sql.Date bDate = rs.getDate("birthday");
+                if (bDate != null) user.setBirthday(bDate.toLocalDate());
+
+                user.setUsername(rs.getString("username"));
+                // Omitimos enviar la contraseña por seguridad
+                user.setPassword("");
+                user.setAdmin(rs.getBoolean("is_admin"));
+
+                String userStatus = rs.getString("status");
+                if(userStatus != null) user.setStatus(User_status.valueOf(userStatus));
+                pm.setUserModel(user);
+
+                // Mapear Roles
+                RoleModel role = new RoleModel();
+                role.setName(rs.getString("r_name"));
+                pm.setRoleModel(role);
+
+                // Mapear Contacto
+                ContactInfoModel contact = new ContactInfoModel();
+                String docType = rs.getString("document_type");
+                if(docType != null) contact.setDocumentType(Document_status.valueOf(docType));
+                contact.setIdentification(rs.getString("identification"));
+                contact.setEmail(rs.getString("c_email"));
+                contact.setPhoneNumber(rs.getString("c_phone"));
+                contact.setCity(rs.getString("c_city"));
+                contact.setAddress(rs.getString("c_address"));
+                pm.setContactInfoModel(contact);
+
+                // Mapear Emergencia
+                EmergencyContactModel emergency = new EmergencyContactModel();
+                emergency.setFirstName(rs.getString("e_first_name"));
+                emergency.setLastName(rs.getString("e_last_name"));
+                String relType = rs.getString("relationship");
+                if(relType != null) emergency.setRelationship(Relationships_status.valueOf(relType));
+                emergency.setEmail(rs.getString("e_email"));
+                emergency.setPhoneNumber(rs.getString("e_phone"));
+                emergency.setCity(rs.getString("e_city"));
+                emergency.setAddress(rs.getString("e_address"));
+                pm.setEmergencyContactModel(emergency);
+
+                // Mapear Profesión (Si existe)
+                pm.setProfession(rs.getString("profession"));
+
+                return Optional.of(pm);
+            }
+            return Optional.empty(); // No encontrado
         }, userId);
     }
 }

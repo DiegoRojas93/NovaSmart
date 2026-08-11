@@ -2,7 +2,8 @@
 "Admin": {
     "sidebarAndPages": [ 
       { "id": 1, "pages": { "Ajustes del Sistema": { "Sections": ["Perfil de la Institución", "Periodos Académicos"] } } },
-      { "id": 2, "pages": { "Inscripciónes": { "Sections": ["Dashboard", "Formulario de inscripción", "Formulario de actualización", "Docentes: Formulario de inscripción", "Estudiantes: Formulario de inscripción", "Acudiente: Formulario de inscripción"] } } },
+      // { "id": 2, "pages": { "Inscripciónes": { "Sections": ["Dashboard", "Formulario de inscripción", "Formulario de actualización", "Docentes: Formulario de inscripción", "Estudiantes: Formulario de inscripción", "Acudiente: Formulario de inscripción"] } } },
+      { "id": 2, "pages": { "Inscripciónes": { "Sections": ["Dashboard", "Formulario de inscripción", "Vínculos Familiares"] } } },
       { "id": 3, "pages": { "Grados, cursos y materias": { "Sections": ["Dashboard 2", "Creación y asignación academica"] } } },
       { "id": 4, "pages": { "Horarios": { "Sections": ["Horarios: Docentes", "Horarios: Estudientes"] } } },
       { "id": 5, "pages": { "Reportes y Auditoría": { "Sections": ["Asistencia Global", "Calificaciones", "Vínculos Familiares"] } } }

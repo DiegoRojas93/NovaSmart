@@ -123,10 +123,30 @@ const PersonnelManager = ( { institutionId }:Props ) => {
   const closeModal = () => setModalConfig(prev => ({ ...prev, isOpen: false }));
 
   // --- 1. CARGAR LISTADO DE PERSONAL (GET) ---
+  // const fetchPersonnel = async () => {
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await fetch(`${apiUrl}/personnel`, {
+  //       headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+  //     });
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       setPersonnel(data);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error al cargar el personal:", error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
   const fetchPersonnel = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch(`${apiUrl}/personnel`, {
+
+      console.warn(`${apiUrl}/users/register/all/${institutionId}`)
+      // ACTUALIZADO: Apunta a la nueva ruta del controlador
+      const response = await fetch(`${apiUrl}/users/register/all/${institutionId}`, { 
         headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
       });
       if (response.ok) {
@@ -151,14 +171,88 @@ const PersonnelManager = ( { institutionId }:Props ) => {
     setIsFormOpen(true);
   };
 
-  const handleOpenEdit = async (userId: number) => {
-    // 1. Aquí harías un fetch `GET /users/register/${userId}` para traer los datos completos
-    // 2. Llenarías `formData` con la respuesta
-    alert(`Aquí cargaremos los datos del usuario ID: ${userId} antes de abrir el form`);
+  // const handleOpenEdit = async (userId: number) => {
+  //   // 1. Aquí harías un fetch `GET /users/register/${userId}` para traer los datos completos
+  //   // 2. Llenarías `formData` con la respuesta
+  //   alert(`Aquí cargaremos los datos del usuario ID: ${userId} antes de abrir el form`);
     
-    // Por ahora solo abrimos el form
-    setEditingUserId(userId);
-    setIsFormOpen(true);
+  //   // Por ahora solo abrimos el form
+  //   setEditingUserId(userId);
+  //   setIsFormOpen(true);
+  // };
+
+  const handleOpenEdit = async (userId: number) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${apiUrl}/users/register/${userId}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        
+        // Manejo de la fecha: Asegurar formato YYYY-MM-DD para el input type="date"
+        let formattedDate = "";
+        if (data.user.birthday) {
+           // Si viene como array de Spring [YYYY, MM, DD] o string ISO, extraemos solo la fecha
+           formattedDate = new Date(
+              Array.isArray(data.user.birthday) 
+                ? data.user.birthday.join('-') 
+                : data.user.birthday
+           ).toISOString().split('T')[0];
+        }
+
+        setFormData({
+          institutionId: data.institutionId || institutionId,
+          user: {
+            firstName: data.user.firstName || '',
+            lastName: data.user.lastName || '',
+            birthday: formattedDate,
+            username: data.user.username || '',
+            password: '', // Dejamos en blanco. El input es opcional al editar.
+            admin: data.user.admin || false,
+            status: data.user.status || ''
+          },
+          roles: {
+            name: data.roles.name || ''
+          },
+          contact_info: {
+            documentType: data.contact_info.documentType || '',
+            identification: data.contact_info.identification || '',
+            email: data.contact_info.email || '',
+            phoneNumber: data.contact_info.phoneNumber || '',
+            city: data.contact_info.city || '',
+            address: data.contact_info.address || ''
+          },
+          emergency_contacts: {
+            firstName: data.emergency_contacts.firstName || '',
+            lastName: data.emergency_contacts.lastName || '',
+            relationship: data.emergency_contacts.relationship || '',
+            email: data.emergency_contacts.email || '',
+            phoneNumber: data.emergency_contacts.phoneNumber || '',
+            city: data.emergency_contacts.city || '',
+            address: data.emergency_contacts.address || ''
+          },
+          profession: data.profession || null
+        });
+
+        setEditingUserId(userId);
+        setIsFormOpen(true);
+      } else {
+        throw new Error("No se pudo cargar la información del usuario.");
+      }
+    } catch (error) {
+      console.error(error);
+      setModalConfig({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Ocurrió un problema al cargar los datos del usuario.",
+        errorCode: null
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleCloseForm = () => {
