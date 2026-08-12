@@ -35,6 +35,7 @@ services:
       - ./DB/pgadmin:/var/lib/pgadmin
     networks:
       - novasmart_net
+
   backend:
     build:
       context: ./Backend
