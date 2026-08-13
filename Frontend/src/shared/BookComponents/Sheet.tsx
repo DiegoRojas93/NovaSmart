@@ -144,7 +144,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Horarios: Docentes":
         return <ScheduleManager institutionId={ institutionInfo.id } />;
       case "Horarios: Estudientes":
-        return <StudentEnrollmentForm />;
+        return <StudentEnrollmentForm institutionId={ institutionInfo.id } />;
       case "Asistencia Global":
         return <GlobalAttendanceReport />;
       case "Calificaciones":
