@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.security.Principal;
+import java.time.LocalDateTime; // <-- NUEVO IMPORT NECESARIO
 import java.util.List;
 
 @RestController
@@ -64,6 +65,9 @@ public class AcademyPeriodController {
         // El frontend ya no necesita enviar institutionId, lo sacamos del token
         period.setInstitutionId(getInstitutionIdFromToken(principal));
 
+        // --- SOLUCIÓN: Asignamos la fecha actual en la creación ---
+        period.setCreatedAt(LocalDateTime.now());
+
         AcademyPeriodModel savedPeriod = academyPeriodService.save(period);
         return new ResponseEntity<>(savedPeriod, HttpStatus.CREATED);
     }
@@ -91,6 +95,10 @@ public class AcademyPeriodController {
         // Aplicamos los valores de seguridad
         period.setId(id);
         period.setInstitutionId(userInstitutionId);
+
+        // --- SOLUCIÓN: Rescatamos la fecha de creación original y ponemos la de actualización ---
+        period.setCreatedAt(existingPeriod.getCreatedAt());
+        period.setUpdatedAt(LocalDateTime.now());
 
         AcademyPeriodModel updatedPeriod = academyPeriodService.save(period);
         return ResponseEntity.ok(updatedPeriod);

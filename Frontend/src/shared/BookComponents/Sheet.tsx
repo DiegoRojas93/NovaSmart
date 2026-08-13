@@ -7,7 +7,7 @@ import AcademicsCreationForm from "@/Roles/Admin/AcademicsCreationForm";
 import TeacherForm from "@/Roles/Admin/TeacherForm";
 import StudentForm from "@/Roles/Admin/StudentForm";
 import GuardianForm from "@/Roles/Admin/GuardianForm";
-import TeacherScheduleForm from "@/Roles/Admin/TeacherScheduleForm";
+
 import StudentEnrollmentForm from "@/Roles/Admin/StudentEnrollmentForm";
 import InstitutionProfileForm from "@/Roles/Admin/InstitutionProfileForm";
 import AcademicPeriodManager from "@/Roles/Admin/AcademicPeriodManager";
@@ -31,6 +31,7 @@ import GuardianGrades from "@/Roles/Guardian/GuardianGrades";
 import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
 import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
 import PersonnelManager from "@/Roles/Admin/PersonnelManager";
+import ScheduleManager from "@/Roles/Admin/ScheduleManager";
 
 interface institutionInfo {
   id: number;
@@ -141,7 +142,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       // case "Acudiente: Formulario de inscripción":
       //   return <GuardianForm />;
       case "Horarios: Docentes":
-        return <TeacherScheduleForm />;
+        return <ScheduleManager institutionId={ institutionInfo.id } />;
       case "Horarios: Estudientes":
         return <StudentEnrollmentForm />;
       case "Asistencia Global":

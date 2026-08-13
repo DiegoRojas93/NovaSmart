@@ -1,4 +1,4 @@
-package com.NovaSmart.Backend.Repositories.Components;
+package com.NovaSmart.Backend.Repositories.Combinations;
 
 import com.NovaSmart.Backend.Model.Components.AcademyPeriodModel;
 import com.NovaSmart.Backend.Repositories.Components.Interfaces.IAcademyPeriodRepository;
@@ -11,6 +11,7 @@ import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -35,6 +36,13 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
 
         model.setInstitutionId(rs.getLong("institution_id"));
 
+        // --- OPCIONAL PERO RECOMENDADO: Mapear las fechas al leer ---
+        Timestamp createdAt = rs.getTimestamp("created_at");
+        model.setCreatedAt(createdAt != null ? createdAt.toLocalDateTime() : null);
+
+        Timestamp updatedAt = rs.getTimestamp("updated_at");
+        model.setUpdatedAt(updatedAt != null ? updatedAt.toLocalDateTime() : null);
+
         return model;
     };
 
@@ -42,7 +50,8 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
     public AcademyPeriodModel save(AcademyPeriodModel period) {
         if (period.getId() == null) {
 
-            String query = "INSERT INTO academic_periods (name, year, start_date, end_date, institution_id) VALUES (?, ?, ?, ?, ?)";
+            // --- SOLUCIÓN 1: Agregamos created_at al INSERT ---
+            String query = "INSERT INTO academic_periods (name, year, start_date, end_date, institution_id, created_at) VALUES (?, ?, ?, ?, ?, ?)";
 
             KeyHolder keyHolder = new GeneratedKeyHolder();
 
@@ -53,12 +62,17 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
                 ps.setDate(3, period.getStartDate() != null ? java.sql.Date.valueOf(period.getStartDate()) : null);
                 ps.setDate(4, period.getEndDate() != null ? java.sql.Date.valueOf(period.getEndDate()) : null);
                 ps.setLong(5, period.getInstitutionId());
+
+                // --- SOLUCIÓN 2: Pasamos el valor de la fecha seteada en el controlador ---
+                ps.setTimestamp(6, period.getCreatedAt() != null ? Timestamp.valueOf(period.getCreatedAt()) : Timestamp.valueOf(java.time.LocalDateTime.now()));
+
                 return ps;
             }, keyHolder);
 
             period.setId(Objects.requireNonNull(keyHolder.getKey()).longValue());
         } else {
-            String query = "UPDATE academic_periods SET name = ?, year = ?, start_date = ?, end_date = ?, institution_id = ? WHERE id = ?";
+            // --- SOLUCIÓN 3: Agregamos updated_at al UPDATE ---
+            String query = "UPDATE academic_periods SET name = ?, year = ?, start_date = ?, end_date = ?, institution_id = ?, updated_at = ? WHERE id = ?";
 
             jdbcTemplate.update(query,
                 period.getName(),
@@ -66,6 +80,9 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
                 period.getStartDate() != null ? java.sql.Date.valueOf(period.getStartDate()) : null,
                 period.getEndDate() != null ? java.sql.Date.valueOf(period.getEndDate()) : null,
                 period.getInstitutionId(),
+
+                // --- SOLUCIÓN 4: Pasamos el valor de la fecha de actualización ---
+                period.getUpdatedAt() != null ? Timestamp.valueOf(period.getUpdatedAt()) : Timestamp.valueOf(java.time.LocalDateTime.now()),
                 period.getId()
             );
         }

@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.*;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -33,4 +34,13 @@ public class AcademyPeriodModel {
     @Column("institution_id")
     @NotNull(message = "La institución es obligatoria.")
     private Long institutionId;
+
+    @Column("created_at")
+    private LocalDateTime createdAt;
+
+    @Column("updated_at")
+    private LocalDateTime updatedAt;
+
+    @Column("deleted_at")
+    private LocalDateTime deletedAt;
 }
