@@ -32,6 +32,7 @@ import GuardianSettings from "@/Roles/Guardian/GuardianSettings";
 import GuardianDashboard from "@/Roles/Guardian/GuardianDashboard";
 import PersonnelManager from "@/Roles/Admin/PersonnelManager";
 import ScheduleManager from "@/Roles/Admin/ScheduleManager";
+import TeacherClassManager from "@/Roles/Teacher/TeacherClassManager";
 
 interface institutionInfo {
   id: number;
@@ -155,9 +156,10 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Dashboard Docente":
         return <TeacherDashboard />;
       case "Toma de Asistencia":
-        return <TeacherAttendance />;
-      case "Mis clases":
-        return <TeacherClasses />;
+        // return <TeacherAttendance />;
+        return <TeacherClassManager institutionId={ institutionInfo.id } teacherId={ roleInfo.id }/>;
+      // case "Mis clases":
+      //   return <TeacherClasses />;
       case "Registro de Calificaciones":
         return <TeacherGrades />;
       case "Asignar Tareas":

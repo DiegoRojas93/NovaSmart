@@ -26,7 +26,7 @@
   "Personal docente": {
     "sidebarAndPages": [ 
       { "id": 1, "pages": { "Mi Tablero": { "Sections": ["Dashboard Docente"] } } },
-      { "id": 2, "pages": { "Gestión de Aula": { "Sections": ["Mis clases", "Toma de Asistencia"] } } },
+      { "id": 2, "pages": { "Gestión de Aula": { "Sections": [ "Toma de Asistencia"] } } },
       { "id": 3, "pages": { "Rendimiento Académico": { "Sections": ["Registro de Calificaciones"] } } },
       { "id": 4, "pages": { "Trabajos y talleres": { "Sections": ["Asignar Tareas", "Calificar Entregas"] } } }
     ]
