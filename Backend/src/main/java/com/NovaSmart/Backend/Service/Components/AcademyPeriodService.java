@@ -12,6 +12,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.Validator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -51,5 +52,10 @@ public class AcademyPeriodService implements IAcademyPeriodService {
     @Transactional
     public void deleteById(Long id) {
         academyPeriodRepository.deleteById(id);
+    }
+
+    @Override
+    public Map<String, Object> getCurrentPeriod(Long institutionId) {
+        return academyPeriodRepository.getCurrentPeriod(institutionId);
     }
 }

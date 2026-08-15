@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -109,5 +110,17 @@ public class AcademyPeriodRepository implements IAcademyPeriodRepository {
     public void deleteById(Long id) {
         String query = "DELETE FROM academic_periods WHERE id = ?";
         jdbcTemplate.update(query, id);
+    }
+
+    public Map<String, Object> getCurrentPeriod(Long institutionId) {
+        String sql = "SELECT id, name, year FROM academic_periods " +
+            "WHERE institution_id = ? AND CURRENT_DATE BETWEEN start_date AND end_date LIMIT 1";
+
+        try {
+            return jdbcTemplate.queryForMap(sql, institutionId);
+        } catch (EmptyResultDataAccessException e) {
+            // Si no hay ningún periodo activo en esta fecha, devolvemos el último o null
+            return null;
+        }
     }
 }

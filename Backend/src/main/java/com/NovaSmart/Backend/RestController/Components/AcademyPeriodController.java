@@ -13,6 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.Principal;
 import java.time.LocalDateTime; // <-- NUEVO IMPORT NECESARIO
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -121,5 +122,12 @@ public class AcademyPeriodController {
 
         academyPeriodService.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{institutionId}/current")
+    public ResponseEntity<?> getCurrentPeriod(@PathVariable Long institutionId) {
+        Map<String, Object> period = academyPeriodService.getCurrentPeriod(institutionId);
+        if (period == null) return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(period);
     }
 }
