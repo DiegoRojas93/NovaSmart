@@ -157,15 +157,15 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
         return <TeacherDashboard />;
       case "Toma de Asistencia":
         // return <TeacherAttendance />;
-        return <TeacherClassManager institutionId={ institutionInfo.id } teacherId={ roleInfo.id }/>;
+        return <TeacherClassManager institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
       // case "Mis clases":
       //   return <TeacherClasses />;
       case "Registro de Calificaciones":
         return <TeacherGrades institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
       case "Asignar Tareas":
-        return <TeacherAssignments institutionId={ institutionInfo.id } teacherId={ roleInfo.id }/>;
+        return <TeacherAssignments institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
       case "Calificar Entregas":
-        return <TeacherSubmissions />;
+        return <TeacherSubmissions institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
 
       // Estudiante
 
