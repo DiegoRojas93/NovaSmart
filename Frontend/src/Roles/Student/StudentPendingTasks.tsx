@@ -1,66 +1,126 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
-import { FileText, Clock, AlertCircle, UploadCloud, Send, ChevronDown, ChevronUp, BookOpen, CheckCircle2 } from "lucide-react";
+import { useState, useEffect, type ChangeEvent, type FormEvent, useCallback } from "react";
+import { FileText, Clock, AlertCircle, UploadCloud, Send, ChevronDown, ChevronUp, BookOpen, CheckCircle2, Download, Filter } from "lucide-react";
+import { ModalComponent } from "@/shared/Basics/ModalComponent"; // Asegúrate de tener la ruta correcta
 
 // --- INTERFACES ---
-interface PendingTask {
-  id: string;
-  subject: string;
+interface CourseSubject {
+  id: string; 
+  name: string; 
   teacher: string;
+}
+
+interface TeacherAttachment {
+  id: number;
+  fileName: string;
+  fileUrl: string;
+}
+
+interface PendingTask {
+  id: string; // ID de la actividad (class_activities.id)
+  courseSubjectId: string;
+  subjectName: string;
+  teacherName: string;
   title: string;
   description: string;
   dueDate: string;
-  isUrgent: boolean; // Si vence en menos de 48 horas
-  attachments: string[]; // Archivos que envió el profesor
+  isUrgent: boolean; // Calculado en base a la fecha límite
+  attachments: TeacherAttachment[];
 }
 
-// --- DATOS SIMULADOS ---
-const mockPendingTasks: PendingTask[] = [
-  { 
-    id: "T1", 
-    subject: "Cálculo", 
-    teacher: "Luis Fernando Ramírez",
-    title: "Taller Evaluativo de Funciones", 
-    description: "Resolver los 10 ejercicios del PDF adjunto. Recuerden justificar cada paso. Se evaluará el procedimiento, no solo la respuesta final.",
-    dueDate: "26 de Julio, 23:59", 
-    isUrgent: true,
-    attachments: ["Taller_Funciones_Periodo1.pdf"]
-  },
-  { 
-    id: "T2", 
-    subject: "Química", 
-    teacher: "Martha Silva",
-    title: "Informe de Laboratorio: Enlaces", 
-    description: "Subir el informe grupal del laboratorio realizado el miércoles. Solo un integrante debe subir el archivo, pero recuerden poner los nombres de todos en la portada.",
-    dueDate: "27 de Julio, 18:00", 
-    isUrgent: true,
-    attachments: ["Formato_Informe_Lab.docx"]
-  },
-  { 
-    id: "T3", 
-    subject: "Inglés", 
-    teacher: "Ana Gómez",
-    title: "Reading Comprehension Unit 4", 
-    description: "Read the article on page 45 and write a 200-word summary. Upload your essay in PDF format.",
-    dueDate: "30 de Julio, 23:59", 
-    isUrgent: false,
-    attachments: []
-  },
-];
+interface Props {
+  institutionId: number;
+  studentId: number;
+}
 
-const StudentPendingTasks = () => {
-  // --- ESTADOS ---
-  const [tasks, setTasks] = useState<PendingTask[]>(mockPendingTasks);
-  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(mockPendingTasks[0]?.id || null);
+const StudentPendingTasks = ({ institutionId, studentId }: Props) => {
+
+  console.error("studentId", studentId)
+
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
+
+  // --- ESTADOS GLOBALES ---
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string>("ALL");
+  const [tasks, setTasks] = useState<PendingTask[]>([]);
+  const [enrolledSubjects, setEnrolledSubjects] = useState<CourseSubject[]>([]);
+  const [expandedTaskId, setExpandedTaskId] = useState<string | null>(null);
   
-  // Estados para el formulario de entrega
+  // --- ESTADOS DEL FORMULARIO DE ENTREGA ---
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [studentComment, setStudentComment] = useState("");
 
+  // --- ESTADOS DE CARGA Y MODAL ---
+  const [isLoading, setIsLoading] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    isOpen: false, type: "success" as "success" | "error", title: "", message: "",
+  });
+  const closeModal = () => setModalConfig(prev => ({ ...prev, isOpen: false }));
+
+  // --- EFECTO: CARGAR TAREAS DEL BACKEND ---
+  const fetchTasks = useCallback(async () => {
+    if (!institutionId || !studentId) return;
+    
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${apiUrl}/student-tasks/${institutionId}/${studentId}/pending`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+      });
+      
+      if (res.ok) {
+        const data = await res.json();
+        
+        // Mapeamos los datos del backend y calculamos si es "Urgente" (vence en menos de 48 horas)
+        const formattedTasks: PendingTask[] = data.map((t: any) => {
+          const due = new Date(t.dueDate);
+          const now = new Date();
+          const hoursDiff = (due.getTime() - now.getTime()) / (1000 * 60 * 60);
+          
+          return {
+            id: t.id.toString(),
+            courseSubjectId: t.courseSubjectId.toString(),
+            subjectName: t.subject,
+            teacherName: t.teacher,
+            title: t.title,
+            description: t.description,
+            dueDate: t.dueDate,
+            isUrgent: hoursDiff > 0 && hoursDiff <= 48,
+            attachments: t.attachments || []
+          };
+        });
+        
+        setTasks(formattedTasks);
+
+        // Extraemos las materias únicas de las tareas pendientes para llenar el filtro
+        const uniqueSubjects = Array.from(new Map(formattedTasks.map(t => 
+          [t.courseSubjectId, { id: t.courseSubjectId, name: t.subjectName, teacher: t.teacherName }]
+        )).values());
+        
+        setEnrolledSubjects(uniqueSubjects);
+      }
+    } catch (error) {
+      console.error("Error cargando tareas pendientes:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [institutionId, studentId, apiUrl]);
+
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
+
+  // --- DERIVADOS (Filtro) ---
+  const filteredTasks = selectedSubjectId === "ALL" 
+    ? tasks 
+    : tasks.filter(t => t.courseSubjectId === selectedSubjectId);
+
   // --- MANEJADORES ---
+  const handleSubjectChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubjectId(e.target.value);
+    setExpandedTaskId(null); 
+  };
+
   const toggleExpand = (id: string) => {
     setExpandedTaskId(prev => prev === id ? null : id);
-    // Limpiamos el formulario al cambiar de tarea
     setSelectedFile(null);
     setStudentComment("");
   };
@@ -71,52 +131,108 @@ const StudentPendingTasks = () => {
     }
   };
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>, taskId: string) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>, taskId: string) => {
     e.preventDefault();
     if (!selectedFile) {
-      alert("Debes adjuntar al menos un archivo para enviar tu tarea.");
+      setModalConfig({ isOpen: true, type: "error", title: "Error", message: "Debes adjuntar un archivo para enviar tu tarea." });
       return;
     }
 
     setIsSubmitting(true);
 
-    const payload = {
-      taskId,
-      fileName: selectedFile.name,
-      comment: studentComment,
-      submittedAt: new Date().toISOString()
-    };
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    if (studentComment) {
+      formData.append("comment", studentComment);
+    }
 
-    console.log("Enviando Tarea al servidor:", payload);
+    try {
+      const res = await fetch(`${apiUrl}/student-tasks/${institutionId}/${studentId}/submit/${taskId}`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` },
+        body: formData
+      });
 
-    setTimeout(() => {
-      alert("¡Trabajo enviado exitosamente al profesor!");
-      // Removemos la tarea de la lista de pendientes
-      setTasks(prev => prev.filter(t => t.id !== taskId));
+      if (!res.ok) throw new Error("Error al enviar la tarea");
+
+      setModalConfig({ isOpen: true, type: "success", title: "¡Enviado!", message: "Trabajo enviado exitosamente al profesor." });
+      
+      // Actualizamos la UI eliminando la tarea enviada
+      const remainingTasks = tasks.filter(t => t.id !== taskId);
+      setTasks(remainingTasks);
       setExpandedTaskId(null);
       setSelectedFile(null);
       setStudentComment("");
+
+      // Actualizamos los filtros por si una materia ya no tiene tareas
+      const remainingSubjectIds = new Set(remainingTasks.map(t => t.courseSubjectId));
+      setEnrolledSubjects(prev => prev.filter(s => remainingSubjectIds.has(s.id)));
+      
+      if (selectedSubjectId !== "ALL" && !remainingSubjectIds.has(selectedSubjectId)) {
+        setSelectedSubjectId("ALL");
+      }
+
+    } catch (error) {
+      console.error(error);
+      setModalConfig({ isOpen: true, type: "error", title: "Error", message: "Hubo un problema al enviar tu tarea." });
+    } finally {
       setIsSubmitting(false);
-    }, 1500);
+    }
   };
 
   // --- CLASES CSS ESTILO CUADERNO ---
   const bentoCardClass = "border-2 border-blue-900/60 rounded-3xl p-6 bg-transparent flex flex-col gap-4 relative transition-colors";
   const textareaClass = "w-full bg-transparent border-2 border-blue-900/30 border-dashed focus:border-solid focus:border-blue-900 outline-none text-blue-950 p-3 rounded-xl font-medium transition-all resize-none min-h-[80px]";
+  const selectClass = "w-full bg-transparent border-b-2 border-blue-900/30 border-dashed focus:border-solid focus:border-blue-900 outline-none text-blue-950 py-2 font-bold transition-all appearance-none cursor-pointer";
 
   return (
-    <div className="w-full flex flex-col gap-6 text-blue-950 pb-10 px-2 md:px-4 animate-in fade-in duration-500">
+    <div className="w-full flex flex-col gap-6 text-blue-950 pb-10 px-2 md:px-4 animate-in fade-in duration-500 relative">
       
       {/* CABECERA */}
-      <div className="mb-2">
-        <h2 className="text-3xl font-black text-blue-950 mb-2">Tareas Pendientes</h2>
-        <p className="text-blue-900/70 font-medium">
-          Revisa las actividades asignadas por tus profesores y sube tus trabajos antes de la fecha límite.
-        </p>
+      <div className="mb-2 flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b-4 border-blue-900/20 pb-4">
+        <div>
+          <h2 className="text-3xl font-black text-blue-950 mb-2">Tareas Pendientes</h2>
+          <p className="text-blue-900/70 font-medium">
+            Revisa las actividades asignadas por tus profesores, descarga el material y sube tus respuestas.
+          </p>
+        </div>
       </div>
 
+      {/* FILTRO DE MATERIAS */}
+      {enrolledSubjects.length > 0 && (
+        <div className={bentoCardClass}>
+          <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+            <div className="flex items-center gap-2 text-blue-900 bg-blue-900/10 p-3 rounded-xl shrink-0">
+              <Filter className="w-5 h-5" />
+              <span className="font-black uppercase tracking-widest text-sm">Filtrar:</span>
+            </div>
+            
+            <div className="w-full md:w-1/2">
+              <select 
+                className={selectClass} 
+                value={selectedSubjectId} 
+                onChange={handleSubjectChange}
+              >
+                <option value="ALL" className="bg-white">Todas las materias pendientes</option>
+                {enrolledSubjects.map(subject => (
+                  <option key={subject.id} value={subject.id} className="bg-white">
+                    {subject.name} - Prof. {subject.teacher}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* LISTA DE TAREAS PENDIENTES */}
       <div className="flex flex-col gap-6">
-        {tasks.length > 0 ? tasks.map((task) => {
+        {isLoading ? (
+          <div className="py-12 flex flex-col items-center text-center text-blue-900/40 animate-pulse">
+            <FileText className="w-12 h-12 mb-2 opacity-50" />
+            <p className="font-bold text-lg">Buscando tareas pendientes...</p>
+          </div>
+        ) : filteredTasks.length > 0 ? filteredTasks.map((task) => {
           const isExpanded = expandedTaskId === task.id;
 
           return (
@@ -142,17 +258,17 @@ const StudentPendingTasks = () => {
                     <FileText className="w-6 h-6" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex flex-wrap items-center gap-2 mb-1">
                       <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md ${
                         task.isUrgent ? "bg-red-200 text-red-900" : "bg-blue-200 text-blue-900"
                       }`}>
-                        {task.subject}
+                        {task.subjectName}
                       </span>
                       {task.isUrgent && <span className="flex items-center gap-1 text-[10px] font-black text-red-600 uppercase"><AlertCircle className="w-3 h-3" /> Urgente</span>}
                     </div>
                     <h3 className="text-xl sm:text-2xl font-black text-blue-950 leading-tight mb-1">{task.title}</h3>
                     <p className="text-xs font-bold text-blue-900/60 uppercase tracking-widest flex items-center gap-1">
-                      <BookOpen className="w-3 h-3" /> Prof. {task.teacher}
+                      <BookOpen className="w-3 h-3" /> Prof. {task.teacherName}
                     </p>
                   </div>
                 </div>
@@ -161,7 +277,8 @@ const StudentPendingTasks = () => {
                   <div className="text-left md:text-right">
                     <span className="block text-[10px] font-bold text-blue-900/50 uppercase tracking-widest">Fecha Límite</span>
                     <span className={`text-sm font-black flex items-center gap-1 ${task.isUrgent ? "text-red-600" : "text-blue-950"}`}>
-                      <Clock className="w-4 h-4" /> {task.dueDate}
+                      <Clock className="w-4 h-4" /> 
+                      {new Date(task.dueDate).toLocaleString('es-CO', { dateStyle: 'short', timeStyle: 'short' })}
                     </span>
                   </div>
                   <button className="p-2 rounded-full bg-blue-900/10 text-blue-900 hover:bg-blue-900 hover:text-white transition-colors">
@@ -172,7 +289,7 @@ const StudentPendingTasks = () => {
 
               {/* --- CONTENIDO EXPANDIDO (Instrucciones y Entrega) --- */}
               {isExpanded && (
-                <div className="p-5 sm:p-6 border-t-2 border-blue-900/10 border-dashed animate-in slide-in-from-top-2 duration-300">
+                <div className="p-5 sm:p-6 border-t-2 border-blue-900/10 border-dashed animate-in slide-in-from-top-2 duration-300 bg-white/40">
                   
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     
@@ -182,20 +299,32 @@ const StudentPendingTasks = () => {
                         <h4 className="text-xs font-bold text-blue-900/70 uppercase tracking-widest mb-2 flex items-center gap-2">
                           Instrucciones de la Actividad
                         </h4>
-                        <p className="text-sm font-medium text-blue-950 leading-relaxed bg-white/50 p-4 rounded-xl border border-blue-900/10">
+                        <p className="text-sm font-medium text-blue-950 leading-relaxed bg-white/60 p-4 rounded-xl border border-blue-900/10">
                           {task.description}
                         </p>
                       </div>
 
-                      {task.attachments.length > 0 && (
+                      {/* ARCHIVOS ADJUNTOS DEL DOCENTE */}
+                      {task.attachments && task.attachments.length > 0 && (
                         <div>
                           <h4 className="text-xs font-bold text-blue-900/70 uppercase tracking-widest mb-2 flex items-center gap-2">
                             Material de Apoyo
                           </h4>
                           <div className="flex flex-col gap-2">
-                            {task.attachments.map((file, idx) => (
-                              <a key={idx} href="#" className="flex items-center gap-2 bg-blue-900/10 hover:bg-blue-900/20 text-blue-900 text-sm font-bold px-3 py-2 rounded-lg transition-colors w-fit">
-                                <FileText className="w-4 h-4" /> {file}
+                            {task.attachments.map((file) => (
+                              <a 
+                                key={file.id} 
+                                href={`${apiUrl}/files/${file.fileUrl}`} 
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center justify-between bg-blue-900/10 hover:bg-blue-900 hover:text-white text-blue-900 text-sm font-bold px-4 py-2.5 rounded-xl transition-colors w-full border border-blue-900/10 shadow-sm"
+                                title="Descargar archivo"
+                              >
+                                <span className="flex items-center gap-2 truncate pr-4">
+                                  <FileText className="w-4 h-4 shrink-0" /> 
+                                  <span className="truncate">{file.fileName}</span>
+                                </span>
+                                <Download className="w-4 h-4 shrink-0" />
                               </a>
                             ))}
                           </div>
@@ -212,7 +341,7 @@ const StudentPendingTasks = () => {
                       <form onSubmit={(e) => handleSubmit(e, task.id)} className="flex flex-col gap-4">
                         
                         {/* Zona de Drop/Upload */}
-                        <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-blue-900/30 border-dashed rounded-xl cursor-pointer bg-white/50 hover:bg-blue-900/5 transition-colors">
+                        <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-blue-900/30 border-dashed rounded-xl cursor-pointer bg-white/60 hover:bg-blue-900/5 transition-colors">
                           <div className="flex flex-col items-center justify-center pt-5 pb-6 text-center px-4">
                             {selectedFile ? (
                               <>
@@ -223,7 +352,7 @@ const StudentPendingTasks = () => {
                             ) : (
                               <>
                                 <UploadCloud className="w-8 h-8 text-blue-900/40 mb-2" />
-                                <p className="text-sm font-bold text-blue-900/70">Haz clic aquí para seleccionar tu archivo</p>
+                                <p className="text-sm font-bold text-blue-900/70">Haz clic aquí para subir tu solución</p>
                                 <p className="text-xs font-medium text-blue-900/50">PDF, Word, Excel, JPG, PNG</p>
                               </>
                             )}
@@ -237,7 +366,7 @@ const StudentPendingTasks = () => {
                             Comentario al Profesor (Opcional)
                           </label>
                           <textarea 
-                            placeholder="Ej: Profe, le envío mi taller. Saludos."
+                            placeholder="Ej: Profe, le envío mi taller. Tuve dudas en el punto 3."
                             className={textareaClass}
                             value={studentComment}
                             onChange={(e) => setStudentComment(e.target.value)}
@@ -248,10 +377,10 @@ const StudentPendingTasks = () => {
                         <button 
                           type="submit" 
                           disabled={isSubmitting || !selectedFile}
-                          className={`mt-2 flex items-center justify-center gap-2 px-6 py-3 border-2 border-blue-900 text-blue-950 font-black rounded-xl transition-all uppercase tracking-widest ${
+                          className={`mt-2 flex items-center justify-center gap-2 px-6 py-3 border-4 border-blue-900 text-blue-950 font-black rounded-xl transition-all uppercase tracking-widest ${
                             isSubmitting || !selectedFile
-                              ? "opacity-50 cursor-not-allowed bg-blue-900/5" 
-                              : "hover:bg-blue-900 hover:text-white shadow-[3px_3px_0_rgba(30,58,138,0.3)] hover:shadow-none hover:translate-y-0.5 hover:translate-x-0.5"
+                              ? "opacity-50 cursor-not-allowed bg-blue-900/5 border-blue-900/20 text-blue-900/50" 
+                              : "bg-white hover:bg-blue-900 hover:text-white shadow-[4px_4px_0_rgba(30,58,138,0.3)] hover:shadow-none hover:translate-y-1 hover:translate-x-1"
                           }`}
                         >
                           <Send className="w-5 h-5" />
@@ -267,14 +396,22 @@ const StudentPendingTasks = () => {
             </div>
           );
         }) : (
-          <div className="py-16 flex flex-col items-center text-center text-blue-900/40">
+          <div className="py-16 flex flex-col items-center text-center text-blue-900/40 border-2 border-blue-900/20 border-dashed rounded-3xl bg-blue-900/5">
             <CheckCircle2 className="w-16 h-16 mb-4 opacity-50" />
-            <h3 className="text-2xl font-black mb-1">¡Estás al día!</h3>
-            <p className="font-medium max-w-sm">Has entregado todas tus tareas. Puedes usar este tiempo para repasar o descansar.</p>
+            <h3 className="text-2xl font-black mb-1">
+              {selectedSubjectId === "ALL" ? "¡Estás al día!" : "Sin tareas pendientes"}
+            </h3>
+            <p className="font-medium max-w-sm">
+              {selectedSubjectId === "ALL" 
+                ? "Has entregado todas tus tareas. Puedes usar este tiempo para repasar o descansar." 
+                : "No tienes trabajos pendientes para esta materia."}
+            </p>
           </div>
         )}
       </div>
 
+      {/* MODAL DE ALERTAS (chadcn) */}
+      <ModalComponent isOpen={modalConfig.isOpen} onClose={closeModal} type={modalConfig.type} title={modalConfig.title} message={modalConfig.message} />
     </div>
   );
 };
