@@ -163,7 +163,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Registro de Calificaciones":
         return <TeacherGrades institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
       case "Asignar Tareas":
-        return <TeacherAssignments />;
+        return <TeacherAssignments institutionId={ institutionInfo.id } teacherId={ roleInfo.id }/>;
       case "Calificar Entregas":
         return <TeacherSubmissions />;
 
