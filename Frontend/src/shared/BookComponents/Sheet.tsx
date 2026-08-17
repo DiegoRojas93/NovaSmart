@@ -154,7 +154,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       // Personal Docente
 
       case "Dashboard Docente":
-        return <TeacherDashboard />;
+        return <TeacherDashboard institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
       case "Toma de Asistencia":
         // return <TeacherAttendance />;
         return <TeacherClassManager institutionId={ institutionInfo.id } teacherId={ roleInfo.id } />;
@@ -170,9 +170,9 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       // Estudiante
 
       case "Resumen de Hoy":
-        return <StudentDashboard />;
-      case "Horario Semanal":
-        return <StudentSchedule />;
+        return <StudentDashboard institutionId={ institutionInfo.id } studentId={ userInfo.id } />;
+      // case "Horario Semanal":
+      //   return <StudentSchedule />;
       case "Pendientes":
         return <StudentPendingTasks institutionId={ institutionInfo.id } studentId={ userInfo.id }/>;
       case "Entregados":
