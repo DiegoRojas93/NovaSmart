@@ -180,7 +180,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Mis Calificaciones":
         return <StudentGrades institutionId={ institutionInfo.id } studentId={ userInfo.id } />;
       case "Mi Asistencia":
-        return <StudentAttendance />;
+        return <StudentAttendance institutionId={ institutionInfo.id } studentId={ userInfo.id } />;
 
       // Acudientes
 

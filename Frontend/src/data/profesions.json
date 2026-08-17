@@ -44,9 +44,8 @@
 "Estudiante": {
     "sidebarAndPages": [ 
       { "id": 1, "pages": { "Mi Tablero": { "Sections": ["Resumen de Hoy"] } } },
-      { "id": 2, "pages": { "Mi Horario": { "Sections": ["Horario Semanal"] } } },
-      { "id": 3, "pages": { "Tareas y Trabajos": { "Sections": ["Pendientes", "Entregados"] } } },
-      { "id": 4, "pages": { "Rendimiento Académico": { "Sections": ["Mis Calificaciones", "Mi Asistencia"] } } }
+      { "id": 2, "pages": { "Rendimiento Académico": { "Sections": ["Mis Calificaciones", "Mi Asistencia"] } } },
+      { "id": 3, "pages": { "Tareas y Trabajos": { "Sections": ["Pendientes", "Entregados"] } } }
     ]
   },
   "Acudiente": {

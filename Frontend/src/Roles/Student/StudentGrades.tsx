@@ -165,7 +165,7 @@ const StudentGrades = ({ institutionId, studentId }: Props) => {
                 return (
                   <div 
                     key={record.id} 
-                    className="flex flex-col md:flex-row gap-6 p-4 md:p-5 border-2 border-blue-900/10 rounded-2xl bg-white hover:border-blue-900/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-md animate-in slide-in-from-bottom-4 fill-mode-both"
+                    className="flex flex-col md:flex-row gap-6 p-4 md:p-5 border-2 border-blue-900/30 rounded-2xl bg-transparent hover:border-blue-900/60 transition-all duration-300 hover:-translate-y-1 hover:shadow-md animate-in slide-in-from-bottom-4 fill-mode-both"
                     style={{ animationDelay: `${idx * 100}ms` }}
                   >
                     
