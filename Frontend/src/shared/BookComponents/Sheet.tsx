@@ -178,7 +178,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Entregados":
         return <StudentSubmittedTasks institutionId={ institutionInfo.id } studentId={ userInfo.id } />;
       case "Mis Calificaciones":
-        return <StudentGrades />;
+        return <StudentGrades institutionId={ institutionInfo.id } studentId={ userInfo.id } />;
       case "Mi Asistencia":
         return <StudentAttendance />;
 
