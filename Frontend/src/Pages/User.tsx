@@ -186,6 +186,7 @@ const User = () => {
                     emergencyContactInfo={ emergency_contacts }
                     logoUrl={ logoUrl }
                     bannerUrl={ bannerUrl }
+                    photoUrl={ photoUrl }
                     sections={sectionsArray}
                     // --- ENVIAMOS LA FUNCIÓN DE ACTUALIZACIÓN AL COMPONENTE HIJO ---
                     onRefresh={() => fetchUserData(false)}
