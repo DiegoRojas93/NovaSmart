@@ -128,7 +128,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
         // return <FormInscription />; 
         return <PersonnelManager institutionId={ institutionInfo.id } />
       case "Dashboard":
-        return <Dashboard />;
+        return <Dashboard institutionId={ institutionInfo.id } />;
       case "Formulario de actualización":
         return <ProfileEditing />;
       case "Vínculos Familiares":
