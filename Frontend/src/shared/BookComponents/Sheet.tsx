@@ -186,7 +186,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       // Acudientes
 
       case "Resumen de estudiantes":
-        return <GuardianDashboard />;
+        return <GuardianDashboard guardianId={ userInfo.id }/>;
       case "Boletines":
         return <GuardianGrades />;
       case "Actualizar Datos":
