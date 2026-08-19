@@ -1,7 +1,24 @@
-import { useState } from "react";
-import { Award, BookOpen, Calendar, TrendingUp, TrendingDown, MessageSquare, AlertTriangle, UserCircle, ChevronDown, ChevronUp, FileText, UserX, Clock } from "lucide-react";
+import { useState, useEffect, useCallback } from "react";
+import { Award, BookOpen, Calendar, TrendingUp, TrendingDown, MessageSquare, AlertTriangle, UserCircle, CheckCircle2, ChevronDown, ChevronUp, FileText, UserX, Clock, Search, User, Loader2 } from "lucide-react";
 
 // --- INTERFACES ---
+interface Props {
+  institutionId: number;
+  guardianId: number;
+}
+
+interface Child {
+  id: string;
+  name: string;
+  course: string;
+  photo: string | null;
+}
+
+interface Period {
+  id: string;
+  name: string;
+}
+
 interface TaskDetail {
   id: string;
   title: string;
@@ -19,152 +36,217 @@ interface StudentGrade {
   id: string;
   subject: string;
   teacher: string;
+  teacherPhoto: string | null;
   grade: number;
   observations: string | null;
   tasks: TaskDetail[];
   absences: AttendanceDetail[];
 }
 
-// --- DATOS SIMULADOS ---
-const mockChildren = [
-  { id: "ST1", name: "Camilo Andrés Gómez Silva", course: "1101" },
-  { id: "ST2", name: "Ana Sofía Gómez Silva", course: "802" }
-];
+const GuardianGrades = ({ institutionId, guardianId }: Props) => {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8080';
 
-const mockPeriods = [
-  { id: "P1", name: "Primer Periodo (2026-I)" },
-  { id: "P2", name: "Segundo Periodo (2026-I)" },
-];
+  // --- ESTADOS DE DATOS ---
+  const [children, setChildren] = useState<Child[]>([]);
+  const [periods, setPeriods] = useState<Period[]>([]);
+  const [rawGrades, setRawGrades] = useState<StudentGrade[]>([]);
 
-const mockGradesDb: Record<string, Record<string, StudentGrade[]>> = {
-  "ST1": {
-    "P1": [
-      { 
-        id: "G1", subject: "Cálculo", teacher: "Luis Fernando Ramírez", grade: 4.2, observations: "Buen desempeño y participación en clase.",
-        tasks: [
-          { id: "T1", title: "Taller de Funciones", grade: 4.5, date: "15 Jul" },
-          { id: "T2", title: "Quiz de Límites", grade: 3.8, date: "22 Jul" }
-        ],
-        absences: []
-      },
-      { 
-        id: "G2", subject: "Física I", teacher: "Carlos Pérez", grade: 3.5, observations: "Aprobado, pero debe mejorar en la entrega puntual de trabajos.",
-        tasks: [
-          { id: "T3", title: "Laboratorio Cinemática", grade: 4.0, date: "10 Jul" },
-          { id: "T4", title: "Taller Vectores", grade: 2.0, date: "18 Jul" } // Aquí el padre ve por qué bajó la nota
-        ],
-        absences: [
-          { id: "A1", date: "12 Jul", type: "AUSENTE" }
-        ]
-      },
-      { 
-        id: "G4", subject: "Inglés", teacher: "Ana Gómez", grade: 2.5, observations: "Reprueba el periodo por inasistencias y no presentar el examen final.",
-        tasks: [
-          { id: "T5", title: "Reading Comprehension", grade: 3.0, date: "05 Jul" },
-          { id: "T6", title: "Examen Final", grade: 1.0, date: "25 Jul" }
-        ],
-        absences: [
-          { id: "A2", date: "08 Jul", type: "LLEGO_TARDE" },
-          { id: "A3", date: "14 Jul", type: "AUSENTE" },
-          { id: "A4", date: "20 Jul", type: "AUSENTE" }
-        ]
-      },
-    ],
-    "P2": []
-  },
-  "ST2": {
-    "P1": [
-      { 
-        id: "G5", subject: "Matemáticas", teacher: "Pedro Gómez", grade: 2.8, observations: "Se distrae fácilmente en clase.",
-        tasks: [{ id: "T7", title: "Taller Álgebra", grade: 2.8, date: "12 Jul" }],
-        absences: []
-      }
-    ],
-    "P2": []
-  }
-};
-
-const GuardianGrades = () => {
-  // --- ESTADOS ---
-  const [selectedStudentId, setSelectedStudentId] = useState<string>(mockChildren[0].id);
-  const [selectedPeriod, setSelectedPeriod] = useState<string>(mockPeriods[0].id);
+  // --- ESTADOS DE SELECCIÓN ---
+  const [selectedStudentId, setSelectedStudentId] = useState<string>("");
+  const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [expandedSubjectId, setExpandedSubjectId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // --- ESTADOS DE UI ---
+  const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  const [isLoadingGrades, setIsLoadingGrades] = useState(false);
+
+  // --- OBTENER SELECTORES INICIALES ---
+  const fetchInitialData = useCallback(async () => {
+    if (!institutionId || !guardianId) return;
+    setIsLoadingInitial(true);
+    try {
+      const res = await fetch(`${apiUrl}/guardian-grades/initial-data/${institutionId}/${guardianId}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setChildren(data.children || []);
+        setPeriods(data.periods || []);
+        
+        // Autoseleccionar el primer estudiante y periodo si existen
+        if (data.children && data.children.length > 0) {
+          setSelectedStudentId(data.children[0].id);
+        }
+        if (data.periods && data.periods.length > 0) {
+          setSelectedPeriod(data.periods[0].id);
+        }
+      }
+    } catch (error) {
+      console.error("Error cargando datos iniciales:", error);
+    } finally {
+      setIsLoadingInitial(false);
+    }
+  }, [institutionId, guardianId, apiUrl]);
+
+  useEffect(() => {
+    fetchInitialData();
+  }, [fetchInitialData]);
+
+  // --- OBTENER NOTAS AL CAMBIAR SELECTORES ---
+  const fetchGrades = useCallback(async () => {
+    if (!selectedStudentId || !selectedPeriod) return;
+    setIsLoadingGrades(true);
+    setExpandedSubjectId(null);
+    setSearchTerm("");
+    
+    try {
+      const res = await fetch(`${apiUrl}/guardian-grades/detail/${selectedStudentId}/${selectedPeriod}`, {
+        headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setRawGrades(data || []);
+      }
+    } catch (error) {
+      console.error("Error cargando el boletín:", error);
+      setRawGrades([]);
+    } finally {
+      setIsLoadingGrades(false);
+    }
+  }, [selectedStudentId, selectedPeriod, apiUrl]);
+
+  useEffect(() => {
+    fetchGrades();
+  }, [fetchGrades]);
 
   // --- DERIVACIÓN DE DATOS ---
-  const currentGrades = mockGradesDb[selectedStudentId]?.[selectedPeriod] || [];
-  
+  const currentGrades = rawGrades.filter(g => 
+    g.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    g.teacher.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const calculateAverage = () => {
-    if (currentGrades.length === 0) return 0;
-    const sum = currentGrades.reduce((acc, curr) => acc + curr.grade, 0);
-    return (sum / currentGrades.length).toFixed(1);
+    if (rawGrades.length === 0) return 0;
+    const sum = rawGrades.reduce((acc, curr) => acc + curr.grade, 0);
+    return (sum / rawGrades.length).toFixed(1);
   };
 
   const average = parseFloat(calculateAverage() as string);
-  const passedSubjects = currentGrades.filter(g => g.grade >= 3.0).length;
-  const failedSubjects = currentGrades.length - passedSubjects;
-  const selectedStudent = mockChildren.find(c => c.id === selectedStudentId);
+  const passedSubjects = rawGrades.filter(g => g.grade >= 3.0).length;
+  const failedSubjects = rawGrades.length - passedSubjects;
+  const selectedStudent = children.find(c => c.id === selectedStudentId);
 
+  // --- MANEJADORES ---
   const toggleExpand = (id: string) => {
     setExpandedSubjectId(prev => prev === id ? null : id);
   };
 
-  // --- CLASES CSS ESTILO CUADERNO ---
-  const bentoCardClass = "border-2 border-blue-900/60 rounded-3xl p-6 bg-transparent flex flex-col gap-4 relative transition-colors";
-  const selectClass = "w-full sm:w-auto bg-white border-2 border-blue-900/30 border-dashed focus:border-solid focus:border-blue-900 outline-none text-blue-950 px-4 py-2 font-black rounded-xl transition-all appearance-none cursor-pointer";
+  const getPhotoUrl = (photo: string | null) => {
+    if (!photo) return null;
+    if (photo.startsWith('http')) return photo;
+    return `${apiUrl}/files/${photo}`;
+  };
 
   const getGradeStyle = (grade: number) => {
-    if (grade >= 4.5) return { bg: "bg-green-100", border: "border-green-300", text: "text-green-800", label: "Excelente" };
-    if (grade >= 3.0) return { bg: "bg-blue-100", border: "border-blue-300", text: "text-blue-800", label: "Aprobado" };
-    return { bg: "bg-red-100", border: "border-red-300", text: "text-red-800", label: "Reprobado" };
+    if (grade >= 4.5) return { bg: "bg-green-100", border: "border-green-300", text: "text-green-800", label: "Excelente", bar: "bg-green-500" };
+    if (grade >= 3.0) return { bg: "bg-blue-100", border: "border-blue-300", text: "text-blue-800", label: "Aprobado", bar: "bg-blue-500" };
+    return { bg: "bg-red-100", border: "border-red-300", text: "text-red-800", label: "Reprobado", bar: "bg-red-500" };
   };
+
+  // --- CLASES CSS COMPARTIDAS ---
+  const bentoCardClass = "border-2 border-blue-900/30 hover:border-blue-900/40 rounded-3xl p-6 bg-transparent flex flex-col gap-4 relative transition-all shadow-sm";
+  const selectClass = "w-full bg-white border-2 border-blue-900/20 focus:border-blue-900 outline-none text-blue-950 px-4 py-2 font-black rounded-xl transition-all appearance-none cursor-pointer";
+
+  // --- PANTALLA DE CARGA INICIAL ---
+  if (isLoadingInitial) {
+    return (
+      <div className="w-full flex flex-col items-center justify-center py-20 text-blue-900/50">
+        <Loader2 className="w-12 h-12 animate-spin mb-4" />
+        <h3 className="text-xl font-black">Cargando boletín...</h3>
+        <p className="font-medium">Obteniendo la información de tus acudidos</p>
+      </div>
+    );
+  }
+
+  // --- ESTADO: SIN ACUDIDOS ---
+  if (children.length === 0) {
+    return (
+      <div className="w-full flex flex-col gap-6 text-blue-950 pb-10 px-2 md:px-4 animate-in fade-in duration-500">
+        <div className="py-20 flex flex-col items-center text-center text-blue-900/40 border-2 border-blue-900/20 border-dashed rounded-3xl bg-blue-900/5 animate-in zoom-in-95">
+          <UserX className="w-16 h-16 mb-4 opacity-50" />
+          <h3 className="text-2xl font-black mb-1">Sin estudiantes asignados</h3>
+          <p className="font-medium max-w-md">No tienes estudiantes asociados a tu cuenta de acudiente para consultar notas.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex flex-col gap-6 text-blue-950 pb-10 px-2 md:px-4 animate-in fade-in duration-500">
       
-      {/* CABECERA */}
+      {/* CABECERA (Animada) */}
       <div className="mb-2 border-b-4 border-blue-900/20 pb-4">
-        <h2 className="text-3xl font-black text-blue-950 mb-2">Seguimiento Académico</h2>
-        <p className="text-blue-900/70 font-medium">
-          Seleccione a su acudido para consultar sus notas definitivas. Haga clic en cada materia para ver el detalle de tareas y asistencia.
+        <h2 className="text-4xl font-black text-blue-950 mb-1 animate-in fade-in slide-in-from-left-4 duration-700">Seguimiento Académico</h2>
+        <p className="text-blue-900/70 font-bold animate-in fade-in slide-in-from-left-4 duration-700 delay-100">
+          Consulte las notas definitivas, el detalle de tareas y la asistencia por cada materia.
         </p>
       </div>
 
-      {/* CONTROLES DE SELECCIÓN */}
-      <div className="flex flex-col sm:flex-row gap-4 mb-2 bg-blue-900/5 p-4 rounded-2xl border border-blue-900/10">
-        <div className="flex-1">
-          <label className="text-[11px] font-bold text-blue-900/70 uppercase tracking-widest flex items-center gap-1 mb-1">
-            <UserCircle className="w-4 h-4"/> Seleccionar Estudiante:
-          </label>
-          <select 
-            className={`${selectClass} w-full`} 
-            value={selectedStudentId} 
-            onChange={(e) => { setSelectedStudentId(e.target.value); setExpandedSubjectId(null); }}
-          >
-            {mockChildren.map(child => <option key={child.id} value={child.id}>{child.name} (Curso {child.course})</option>)}
-          </select>
+      {/* CONTROLES DE SELECCIÓN (Estudiante y Periodo) */}
+      <div className="flex flex-col sm:flex-row items-center gap-4 mb-2 bg-blue-900/5 p-4 rounded-3xl border-2 border-blue-900/10 animate-in zoom-in-95 duration-500">
+        
+        {/* FOTO Y SELECTOR DEL ESTUDIANTE */}
+        <div className="flex-1 w-full flex items-center gap-4">
+          <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shrink-0 border-2 border-blue-900/20 overflow-hidden shadow-sm">
+            {selectedStudent?.photo ? (
+              <img src={getPhotoUrl(selectedStudent.photo)!} alt={selectedStudent.name} className="w-full h-full object-cover" />
+            ) : (
+              <UserCircle className="w-8 h-8 text-blue-900/40" />
+            )}
+          </div>
+          <div className="flex-1">
+            <label className="text-[10px] font-bold text-blue-900/70 uppercase tracking-widest flex items-center gap-1 mb-1">
+              Estudiante:
+            </label>
+            <select 
+              className={selectClass} 
+              value={selectedStudentId} 
+              onChange={(e) => setSelectedStudentId(e.target.value)}
+            >
+              {children.map(child => <option key={child.id} value={child.id}>{child.name} (Curso {child.course})</option>)}
+            </select>
+          </div>
         </div>
         
-        <div className="sm:w-1/3">
-          <label className="text-[11px] font-bold text-blue-900/70 uppercase tracking-widest flex items-center gap-1 mb-1">
+        {/* SELECTOR DE PERIODO */}
+        <div className="w-full sm:w-1/3">
+          <label className="text-[10px] font-bold text-blue-900/70 uppercase tracking-widest flex items-center gap-1 mb-1">
             <Calendar className="w-4 h-4"/> Periodo:
           </label>
           <select 
-            className={`${selectClass} w-full`} 
+            className={selectClass} 
             value={selectedPeriod} 
-            onChange={(e) => { setSelectedPeriod(e.target.value); setExpandedSubjectId(null); }}
+            onChange={(e) => setSelectedPeriod(e.target.value)}
           >
-            {mockPeriods.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
+            {periods.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
           </select>
         </div>
       </div>
 
-      {currentGrades.length > 0 ? (
+      {/* RENDERIZADO DEL CONTENIDO DE NOTAS */}
+      {isLoadingGrades ? (
+        <div className="py-20 flex flex-col items-center justify-center text-blue-900/50">
+          <Loader2 className="w-10 h-10 animate-spin mb-4" />
+          <p className="font-bold">Calculando notas del periodo...</p>
+        </div>
+      ) : rawGrades.length > 0 ? (
         <>
-          {/* --- SECCIÓN 1: KPIs DEL PERIODO --- */}
+          {/* --- SECCIÓN 1: KPIs DEL PERIODO (Animados) --- */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="border-2 border-blue-900/20 bg-white/50 rounded-2xl p-5 flex flex-col gap-1 transition-colors">
+            <div className="border-2 border-blue-900/20 bg-white/50 rounded-2xl p-5 flex flex-col gap-1 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: '100ms' }}>
               <div className="flex justify-between items-center text-blue-900/80 mb-2">
-                <span className="text-xs font-bold uppercase tracking-widest">Promedio General</span>
+                <span className="text-xs font-black uppercase tracking-widest">Promedio General</span>
                 <Award className={`w-5 h-5 ${average >= 4.0 ? "text-yellow-500" : average >= 3.0 ? "text-blue-500" : "text-red-500"}`} />
               </div>
               <div className="flex items-end gap-2">
@@ -173,9 +255,20 @@ const GuardianGrades = () => {
               </div>
             </div>
 
-            <div className={`border-2 rounded-2xl p-5 flex flex-col gap-1 transition-colors ${failedSubjects > 0 ? "border-red-900/30 bg-red-50/50" : "border-blue-900/20 bg-white/50"}`}>
+            <div className="border-2 border-blue-900/20 bg-white/50 rounded-2xl p-5 flex flex-col gap-1 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-4" style={{ animationDelay: '200ms' }}>
               <div className="flex justify-between items-center text-blue-900/80 mb-2">
-                <span className="text-xs font-bold uppercase tracking-widest">En Riesgo (Reprobadas)</span>
+                <span className="text-xs font-black uppercase tracking-widest">Aprobadas</span>
+                <TrendingUp className="w-5 h-5 text-green-600" />
+              </div>
+              <div className="flex items-end gap-2">
+                <span className="text-4xl font-black text-green-700">{passedSubjects}</span>
+                <span className="text-sm font-bold text-blue-900/50 mb-1">de {rawGrades.length}</span>
+              </div>
+            </div>
+
+            <div className={`border-2 rounded-2xl p-5 flex flex-col gap-1 shadow-sm hover:-translate-y-1 hover:shadow-md transition-all duration-300 animate-in fade-in slide-in-from-bottom-4 ${failedSubjects > 0 ? "border-red-900/30 bg-red-50/50" : "border-blue-900/20 bg-white/50"}`} style={{ animationDelay: '300ms' }}>
+              <div className="flex justify-between items-center text-blue-900/80 mb-2">
+                <span className="text-xs font-black uppercase tracking-widest">En Riesgo</span>
                 {failedSubjects > 0 ? <AlertTriangle className="w-5 h-5 text-red-600 animate-pulse" /> : <TrendingDown className="w-5 h-5 text-blue-900/30" />}
               </div>
               <div className="flex items-end gap-2">
@@ -186,119 +279,160 @@ const GuardianGrades = () => {
           </div>
 
           {/* --- SECCIÓN 2: DETALLE DE MATERIAS (ACORDEÓN) --- */}
-          <div className={bentoCardClass}>
-            <div className="flex justify-between items-center border-b-2 border-blue-900/80 pb-2 mb-4">
+          <div className={`${bentoCardClass} mt-2`}>
+            
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b-2 border-blue-900/10 pb-4 mb-2 gap-4">
               <h3 className="text-xl font-extrabold text-blue-950 inline-flex items-center gap-2">
                 <BookOpen className="w-5 h-5"/> Desglose por Materias
               </h3>
+
+              {/* BUSCADOR / FILTRO */}
+              <div className="relative w-full sm:w-64 shrink-0">
+                <Search className="absolute left-3 top-2.5 w-4 h-4 text-blue-900/40" />
+                <input 
+                  type="text" 
+                  placeholder="Buscar materia o profesor..."
+                  className="w-full bg-white border-2 border-blue-900/20 focus:border-blue-900 outline-none text-blue-950 py-2 pl-9 pr-3 rounded-xl text-sm font-bold transition-all shadow-sm"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
+              </div>
             </div>
 
             <div className="flex flex-col gap-4">
-              {currentGrades.map((record) => {
+              {currentGrades.length > 0 ? currentGrades.map((record, idx) => {
                 const style = getGradeStyle(record.grade);
                 const isExpanded = expandedSubjectId === record.id;
                 const totalAbsences = record.absences.length;
 
                 return (
-                  <div key={record.id} className={`flex flex-col border-2 rounded-2xl transition-all overflow-hidden ${isExpanded ? "border-blue-900/40 bg-white shadow-md" : "border-blue-900/10 bg-white/40 hover:border-blue-900/30"}`}>
+                  <div 
+                    key={record.id} 
+                    className={`flex flex-col border-2 rounded-2xl transition-all duration-300 overflow-hidden animate-in slide-in-from-bottom-4 fill-mode-both hover:-translate-y-1 ${
+                      isExpanded ? "border-blue-900 shadow-[6px_6px_0_rgba(30,58,138,0.15)]" : "border-blue-900/20 bg-white hover:border-blue-900/50 shadow-sm"
+                    }`}
+                    style={{ animationDelay: `${idx * 100}ms` }}
+                  >
                     
                     {/* CABECERA DE LA MATERIA (Clickeable) */}
                     <div 
                       onClick={() => toggleExpand(record.id)}
-                      className="flex flex-col md:flex-row gap-4 p-4 cursor-pointer items-center justify-between"
+                      className={`flex flex-col md:flex-row gap-5 p-5 cursor-pointer items-start md:items-center justify-between transition-colors ${
+                        isExpanded ? "bg-blue-900/5" : "hover:bg-blue-900/5"
+                      }`}
                     >
-                      <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto flex-1">
-                        {/* Nota Principal */}
-                        <div className={`flex flex-col items-center justify-center w-full md:w-20 shrink-0 py-2 rounded-xl border-2 ${style.bg} ${style.border}`}>
-                          <span className={`text-2xl font-black ${style.text}`}>{record.grade.toFixed(1)}</span>
+                      <div className="flex flex-col md:flex-row items-start md:items-center gap-5 w-full md:w-auto flex-1">
+                        
+                        {/* Nota Principal Destacada */}
+                        <div className={`flex flex-col items-center justify-center w-full md:w-24 shrink-0 py-3 rounded-xl border-2 ${style.bg} ${style.border}`}>
+                          <span className={`text-3xl font-black ${style.text}`}>{record.grade.toFixed(1)}</span>
+                          <span className={`text-[10px] font-black uppercase tracking-widest mt-1 ${style.text}`}>{style.label}</span>
                         </div>
 
-                        {/* Info Materia */}
-                        <div className="flex-1 w-full text-center md:text-left">
-                          <div className="flex flex-col sm:flex-row sm:items-center gap-2 mb-1 justify-center md:justify-start">
-                            <h4 className="text-lg font-black text-blue-950">{record.subject}</h4>
-                            <span className="text-[10px] font-bold text-blue-900/60 uppercase tracking-widest bg-blue-900/5 px-2 py-0.5 rounded-md">
-                              Prof. {record.teacher}
-                            </span>
-                          </div>
+                        {/* Info Materia y Profesor */}
+                        <div className="flex-1 w-full text-center md:text-left flex flex-col gap-2">
+                          <h4 className="text-xl font-black text-blue-950 leading-tight">{record.subject}</h4>
                           
-                          {/* Mini indicadores de alertas */}
-                          <div className="flex items-center justify-center md:justify-start gap-3 mt-1">
+                          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
+                            {/* Foto y nombre del profesor */}
+                            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-lg border border-blue-900/10 shadow-sm">
+                              {record.teacherPhoto ? (
+                                <img src={getPhotoUrl(record.teacherPhoto)!} alt={record.teacher} className="w-5 h-5 rounded-full object-cover border border-blue-900/20" />
+                              ) : (
+                                <User className="w-4 h-4 text-blue-900/40" />
+                              )}
+                              <span className="text-[11px] font-bold text-blue-900/70">Prof. {record.teacher}</span>
+                            </div>
+                            
+                            {/* Badges Rápidos */}
                             {totalAbsences > 0 && (
-                              <span className="text-[10px] font-bold text-red-600 flex items-center gap-1 bg-red-50 px-2 py-0.5 rounded-md">
-                                <UserX className="w-3 h-3" /> {totalAbsences} Falla{totalAbsences > 1 ? 's' : ''}
+                              <span className="text-[10px] font-bold text-red-700 flex items-center gap-1.5 bg-red-500/10 px-2.5 py-1 rounded-lg border border-red-500/20">
+                                <UserX className="w-3.5 h-3.5" /> {totalAbsences} Falla{totalAbsences > 1 ? 's' : ''}
                               </span>
                             )}
-                            <span className="text-[10px] font-bold text-blue-900/50 flex items-center gap-1">
-                              <FileText className="w-3 h-3" /> {record.tasks.length} Entregables
+                            <span className="text-[10px] font-bold text-blue-900/60 flex items-center gap-1.5 bg-blue-900/5 px-2.5 py-1 rounded-lg border border-blue-900/10">
+                              <FileText className="w-3.5 h-3.5" /> {record.tasks.length} Entregables
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <button className="p-2 rounded-full bg-blue-900/5 text-blue-900 hover:bg-blue-900 hover:text-white transition-colors hidden md:block shrink-0">
-                        {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                      <button className="p-2 rounded-full bg-blue-900/10 text-blue-900 hover:bg-blue-900 hover:text-white transition-colors w-full md:w-auto shrink-0 mt-2 md:mt-0">
+                        {isExpanded ? <ChevronUp className="w-5 h-5 mx-auto" /> : <ChevronDown className="w-5 h-5 mx-auto" />}
                       </button>
                     </div>
 
                     {/* CONTENIDO DESPLEGABLE (Tareas y Asistencia) */}
                     {isExpanded && (
-                      <div className="p-4 md:p-6 border-t-2 border-blue-900/10 bg-blue-50/30 animate-in slide-in-from-top-2 duration-300">
+                      <div className="p-5 md:p-6 border-t-2 border-blue-900/10 border-dashed animate-in slide-in-from-top-2 duration-300">
                         
                         {/* Observación del profesor */}
-                        <div className="flex gap-2 items-start bg-white p-3 rounded-xl border border-blue-900/10 shadow-sm mb-6">
-                          <MessageSquare className="w-4 h-4 text-blue-900/40 mt-0.5 shrink-0" />
-                          <p className="text-sm font-medium text-blue-950/80 italic">
-                            <strong className="not-italic text-blue-900 font-bold block mb-1 text-xs uppercase">Observación General del Periodo:</strong>
-                            {record.observations || "Sin observaciones registradas."}
+                        <div className="flex gap-3 items-start bg-blue-900/5 p-4 rounded-xl border border-blue-900/10 shadow-sm mb-6">
+                          <MessageSquare className="w-5 h-5 text-blue-900/40 mt-0.5 shrink-0" />
+                          <p className="text-sm font-medium text-blue-950/80 italic leading-relaxed">
+                            <strong className="not-italic text-blue-900 font-black block mb-1 text-xs uppercase tracking-widest">Observación General del Periodo:</strong>
+                            "{record.observations || "Sin observaciones registradas."}"
                           </p>
                         </div>
 
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                           
                           {/* Columna 1: Tareas / Notas parciales */}
                           <div>
-                            <h5 className="text-xs font-black text-blue-900/70 uppercase tracking-widest mb-3 flex items-center gap-2 border-b-2 border-blue-900/10 pb-1">
-                              <FileText className="w-4 h-4" /> Trabajos Evaluados
+                            <h5 className="text-xs font-black text-blue-900/70 uppercase tracking-widest mb-4 flex items-center gap-2 border-b-2 border-blue-900/10 pb-2">
+                              <FileText className="w-4 h-4 text-blue-900" /> Trabajos Evaluados
                             </h5>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-3">
                               {record.tasks.length > 0 ? record.tasks.map(task => (
-                                <div key={task.id} className="flex items-center justify-between bg-white p-2 px-3 rounded-lg border border-blue-900/10">
-                                  <div className="flex flex-col">
+                                <div key={task.id} className="flex items-center justify-between bg-white p-3 px-4 rounded-xl border border-blue-900/10 hover:border-blue-900/30 transition-colors shadow-sm">
+                                  <div className="flex flex-col gap-0.5">
                                     <span className="text-sm font-bold text-blue-950">{task.title}</span>
-                                    <span className="text-[10px] font-bold text-blue-900/40">{task.date}</span>
+                                    <span className="text-[10px] font-bold text-blue-900/50 flex items-center gap-1">
+                                      <Calendar className="w-3 h-3" /> {task.date}
+                                    </span>
                                   </div>
-                                  <span className={`text-sm font-black px-2 py-1 rounded-md ${task.grade && task.grade >= 3.0 ? "bg-blue-50 text-blue-700" : "bg-red-50 text-red-700"}`}>
+                                  <span className={`text-lg font-black px-3 py-1 rounded-lg border ${task.grade && task.grade >= 3.0 ? "bg-blue-50/50 text-blue-700 border-blue-200" : "bg-red-50/50 text-red-700 border-red-200"}`}>
                                     {task.grade ? task.grade.toFixed(1) : "N/A"}
                                   </span>
                                 </div>
                               )) : (
-                                <p className="text-xs font-bold text-blue-900/40 italic">No hay notas de trabajos registrados.</p>
+                                <div className="p-4 bg-blue-900/5 rounded-xl border border-blue-900/10 text-center">
+                                  <p className="text-xs font-bold text-blue-900/50">No hay notas de trabajos registrados aún.</p>
+                                </div>
                               )}
                             </div>
                           </div>
 
                           {/* Columna 2: Asistencia */}
                           <div>
-                            <h5 className="text-xs font-black text-blue-900/70 uppercase tracking-widest mb-3 flex items-center gap-2 border-b-2 border-blue-900/10 pb-1">
-                              <UserX className="w-4 h-4" /> Registro de Novedades (Fallas)
+                            <h5 className="text-xs font-black text-blue-900/70 uppercase tracking-widest mb-4 flex items-center gap-2 border-b-2 border-blue-900/10 pb-2">
+                              <UserX className="w-4 h-4 text-blue-900" /> Registro de Novedades
                             </h5>
-                            <div className="flex flex-col gap-2">
+                            <div className="flex flex-col gap-3">
                               {record.absences.length > 0 ? record.absences.map(abs => (
-                                <div key={abs.id} className="flex items-center gap-3 bg-white p-2 px-3 rounded-lg border border-red-900/10">
+                                <div key={abs.id} className="flex items-center gap-3 bg-white p-3 px-4 rounded-xl border border-red-900/10 hover:border-red-900/30 transition-colors shadow-sm">
                                   {abs.type === "AUSENTE" ? (
-                                    <UserX className="w-4 h-4 text-red-500 shrink-0" />
+                                    <div className="p-2 bg-red-500/10 rounded-lg shrink-0">
+                                      <UserX className="w-4 h-4 text-red-600" />
+                                    </div>
                                   ) : (
-                                    <Clock className="w-4 h-4 text-yellow-500 shrink-0" />
+                                    <div className="p-2 bg-amber-500/10 rounded-lg shrink-0">
+                                      <Clock className="w-4 h-4 text-amber-600" />
+                                    </div>
                                   )}
-                                  <div className="flex flex-col">
-                                    <span className="text-xs font-black text-blue-950 uppercase">{abs.type === "AUSENTE" ? "Inasistencia" : "Llegada Tarde"}</span>
-                                    <span className="text-[10px] font-bold text-blue-900/50">{abs.date}</span>
+                                  <div className="flex flex-col gap-0.5">
+                                    <span className={`text-xs font-black uppercase tracking-wider ${abs.type === "AUSENTE" ? "text-red-700" : "text-amber-700"}`}>
+                                      {abs.type === "AUSENTE" ? "Inasistencia Injustificada" : "Llegada Tarde"}
+                                    </span>
+                                    <span className="text-[10px] font-bold text-blue-900/50 flex items-center gap-1">
+                                      <Calendar className="w-3 h-3" /> {abs.date}
+                                    </span>
                                   </div>
                                 </div>
                               )) : (
-                                <div className="flex items-center gap-2 bg-green-50/50 p-2 px-3 rounded-lg border border-green-900/10 text-green-700">
-                                  <span className="text-xs font-bold">Sin novedades de asistencia.</span>
+                                <div className="flex items-center gap-3 bg-green-500/5 p-4 rounded-xl border border-green-500/20 text-green-700">
+                                  <CheckCircle2 className="w-5 h-5 shrink-0" />
+                                  <span className="text-xs font-bold">Excelente. Sin novedades de inasistencia.</span>
                                 </div>
                               )}
                             </div>
@@ -309,13 +443,19 @@ const GuardianGrades = () => {
                     )}
                   </div>
                 );
-              })}
+              }) : (
+                <div className="py-12 flex flex-col items-center text-center text-blue-900/40 bg-blue-900/5 rounded-2xl border-2 border-blue-900/10 border-dashed animate-in zoom-in-95">
+                  <Search className="w-12 h-12 mb-3 opacity-50" />
+                  <p className="font-black text-xl">Sin resultados</p>
+                  <p className="text-sm font-medium mt-1">No se encontraron materias que coincidan con "{searchTerm}".</p>
+                </div>
+              )}
             </div>
           </div>
         </>
       ) : (
-        /* --- ESTADO VACÍO --- */
-        <div className="py-20 flex flex-col items-center text-center text-blue-900/40 border-2 border-blue-900/10 border-dashed rounded-3xl mt-4 bg-white/30">
+        /* --- ESTADO VACÍO (Sin notas en el periodo) --- */
+        <div className="py-20 flex flex-col items-center text-center text-blue-900/40 border-2 border-blue-900/10 border-dashed rounded-3xl mt-4 bg-white/30 animate-in zoom-in-95">
           <Award className="w-16 h-16 mb-4 opacity-50" />
           <h3 className="text-2xl font-black mb-1">Sin información</h3>
           <p className="font-medium max-w-md">No hay calificaciones registradas para {selectedStudent?.name.split(" ")[0]} en este periodo.</p>
