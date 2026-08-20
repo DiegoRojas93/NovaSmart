@@ -10,7 +10,6 @@
   },
   "Rector": {
     "sidebarAndPages": [ 
-      { "id":1, "pages": {"Ajustes del rector": {"Sections": []}}}
     ]
   },
   "Coordinador": {

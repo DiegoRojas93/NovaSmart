@@ -150,7 +150,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Asistencia Global":
         return <GlobalAttendanceReport institutionId={ institutionInfo.id } />;
       case "Calificaciones":
-        return <GlobalGradesReport />;
+        return <GlobalGradesReport institutionId={ institutionInfo.id } />;
 
       // Personal Docente
 
