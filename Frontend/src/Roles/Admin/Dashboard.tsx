@@ -504,7 +504,7 @@ const Dashboard = ({ institutionId }: Props) => {
         <p className="text-blue-900/70 font-medium mt-1">Métricas y personal en tiempo real de la institución educativa.</p>
       </div>
 
-      {/* --- SELECTOR DE PESTAÑAS (Estilo GuardianSettings) --- */}
+      {/* --- SELECTOR DE PESTAÑAS --- */}
       <div className="flex bg-blue-900/10 p-1 rounded-2xl w-full sm:w-max animate-in fade-in zoom-in-95 duration-500 mb-2">
         <button 
           type="button"

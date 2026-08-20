@@ -134,7 +134,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Vínculos Familiares":
         return <FamilyLinksManager />;
       case "Dashboard 2":
-        return <AcademicsDashboard />;
+        return <AcademicsDashboard institutionId={ institutionInfo.id } />;
       case "Creación y asignación academica":
         return <AcademicsCreationForm />;
       // case "Docentes: Formulario de inscripción":
