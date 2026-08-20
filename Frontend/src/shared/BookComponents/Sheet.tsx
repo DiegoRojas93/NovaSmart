@@ -148,7 +148,7 @@ const Sheet = ({ institutionInfo, userInfo, roleInfo, contactInfo, emergencyCont
       case "Horarios: Estudientes":
         return <StudentEnrollmentForm institutionId={ institutionInfo.id } />;
       case "Asistencia Global":
-        return <GlobalAttendanceReport />;
+        return <GlobalAttendanceReport institutionId={ institutionInfo.id } />;
       case "Calificaciones":
         return <GlobalGradesReport />;
 
