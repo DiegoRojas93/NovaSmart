@@ -7,6 +7,8 @@ import User from "./Pages/User";
 import { Login } from "./Pages/Login";
 import { About } from "./Pages/About";
 import { Contact } from "./Pages/Contact";
+import { ForgotPassword } from "./Pages/ForgotPassword";
+import { ResetPassword } from "./Pages/ResetPassword";
 
 
 const Layout = lazy(() => import("./Pages/Layout"))
@@ -19,6 +21,8 @@ export const AppRouter = () => {
           <Route index element={ <Home /> } />
           <Route path="/Register" element={ <FormInstitutions /> } />
           <Route path="/Login" element={ <Login /> } />
+          <Route path="/ForgotPassword" element={ <ForgotPassword /> } />
+          <Route path="/reset-password" element={ <ResetPassword /> } />
           <Route path="/About" element={ <About /> } />
           <Route path="/Contact" element={ <Contact /> } />
         </Route>

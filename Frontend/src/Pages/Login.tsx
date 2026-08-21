@@ -152,7 +152,7 @@ export const Login = () => {
           <Link to="/" className="text-brand-secundary-6 hover:text-brand-primary-4 transition-colors">
             &larr; Volver al Home
           </Link>
-          <Link to="/" className="text-brand-primary-3 hover:text-brand-primary-4 transition-colors">
+          <Link to="/ForgotPassword" className="text-brand-primary-3 hover:text-brand-primary-4 transition-colors">
             ¿Olvidaste tu clave?
           </Link>
         </div>
