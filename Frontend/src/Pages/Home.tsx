@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router"; 
-import image1 from "../Assets/Padres profes alumnos.jpg";
-import image2 from "../Assets/Gestión academica.jpg";
+import Folder from '../components/Folder'; 
 import Aurora from '../components/Aurora';
 import HeaderComponent from "../shared/PagesComponents/HeaderComponent";
 import FooterComponent from "@/shared/PagesComponents/FooterComponent";
+
+import image1 from "../Assets/Padres profes alumnos.jpg";
+import image2 from "../Assets/Gestión academica.jpg";
+import image3 from "../Assets/Niña.jpg";
+import image5 from "../Assets/Colegio 1.jpg";
+import image4 from "../Assets/Colegio 2.jpg";
+import image6 from "../Assets/Gestión academica.jpg";
 
 const Home = () => {
   const [darkMode, setDarkMode] = useState(true);
@@ -52,9 +58,7 @@ const Home = () => {
     <div className={`w-full overflow-x-hidden font-sans transition-colors duration-500 ${themeBg} ${themeText}`}>
       
       {/* --- NAVBAR FLOTANTE (PILL GLASSMORPHISM) --- */}
-
       <HeaderComponent themeTextMuted={ themeTextMuted } isHidden={ isHidden } darkMode={ darkMode } toogleTheme={toogleTheme} />
-
 
       {/* --- HERO SECTION --- */}
       <section className="relative min-h-screen w-full flex flex-col items-center justify-center pt-32 overflow-hidden">
@@ -72,19 +76,15 @@ const Home = () => {
         <div className={`absolute inset-0 z-0 pointer-events-none ${darkMode ? 'bg-brand-primary-1/60' : 'bg-white/40'}`}></div>
 
         <article className="relative z-10 flex flex-col items-center justify-center px-6 py-12 max-w-4xl text-center">
-          
           <span className="px-4 py-1.5 rounded-full bg-brand-primary-5/10 text-brand-primary-5 border border-brand-primary-5/20 text-xs font-bold tracking-widest uppercase mb-6 shadow-[0_0_15px_rgba(0,223,130,0.15)] backdrop-blur-sm">
             El futuro de la gestión escolar
           </span>
-          
           <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tight">
             Automatiza tu institución con <span className="text-brand-primary-5">NovaSmart</span>
           </h2>
-          
           <p className={`text-lg md:text-xl mb-10 max-w-2xl leading-relaxed font-medium ${darkMode ? 'text-brand-secundary-7' : 'text-brand-secundary-1'}`}>
             Gestiona tus procesos educativos de manera eficiente y moderna. Desde la administración de estudiantes hasta la planificación de clases, te ofrecemos todas las herramientas necesarias.
           </p>
-          
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
             <Link
               to="/Register"
@@ -118,14 +118,39 @@ const Home = () => {
 
           <div className="flex flex-col gap-16 md:gap-24">
             
+            {/* --- TARJETA 1 (Multi-Rol) --- */}
             <div className={`flex flex-col md:flex-row items-center gap-8 lg:gap-16 group p-6 md:p-8 rounded-[2.5rem] ${cardBg} transition-colors duration-500 border`}>
-              <div className="w-full md:w-1/2 overflow-hidden rounded-3xl relative">
-                <div className={`absolute inset-0 z-10 mix-blend-overlay rounded-3xl ${darkMode ? 'bg-brand-primary-3/30' : 'bg-transparent'}`}></div>
-                <img
-                  className="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105"
-                  src={image1}
-                  alt="Estudiantes y profesores"
-                />
+              
+              {/* Contenedor del Folder 1 */}
+              <div className="w-full md:w-1/2 h-[300px] md:h-[400px] rounded-3xl relative flex items-center justify-center bg-brand-primary-5/5 border border-brand-primary-5/20 transition-colors duration-500">
+                <div className={`absolute inset-0 z-10 mix-blend-overlay rounded-3xl ${darkMode ? 'bg-brand-primary-3/10' : 'bg-transparent'}`}></div>
+                
+
+                <div className="relative z-20">
+                  <Folder 
+                    size={2.5}
+                    items={[ 
+                      <img 
+                        key="img1"
+                        src={image1} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />,
+                      <img 
+                        key="img1"
+                        src={image2} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />,
+                      <img 
+                        key="img1"
+                        src={image3} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />
+                    ]}
+                  />
+                </div>
               </div>
               
               <div className="w-full md:w-1/2 flex flex-col justify-center">
@@ -143,14 +168,39 @@ const Home = () => {
               </div>
             </div>
 
+            {/* --- TARJETA 2 (Escalabilidad) --- */}
             <div className={`flex flex-col md:flex-row-reverse items-center gap-8 lg:gap-16 group p-6 md:p-8 rounded-[2.5rem] ${cardBg} transition-colors duration-500 border`}>
-              <div className="w-full md:w-1/2 overflow-hidden rounded-3xl relative">
-                <div className={`absolute inset-0 z-10 mix-blend-overlay rounded-3xl ${darkMode ? 'bg-brand-primary-3/30' : 'bg-transparent'}`}></div>
-                <img
-                  className="w-full h-[300px] md:h-[400px] object-cover transform transition-transform duration-700 group-hover:scale-105"
-                  src={image2}
-                  alt="Gestión academica"
-                />
+              
+              {/* Contenedor del Folder 2 */}
+              <div className="w-full md:w-1/2 h-[300px] md:h-[400px] rounded-3xl relative flex items-center justify-center bg-brand-secundary-5/5 border border-brand-secundary-5/20 transition-colors duration-500">
+                <div className={`absolute inset-0 z-10 mix-blend-overlay rounded-3xl ${darkMode ? 'bg-brand-secundary-3/10' : 'bg-transparent'}`}></div>
+                
+
+                <div className="relative z-20">
+                  <Folder 
+                    size={2.5}
+                    items={[ 
+                      <img 
+                        key="img1"
+                        src={image4} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />,
+                      <img 
+                        key="img1"
+                        src={image5} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />,
+                      <img 
+                        key="img1"
+                        src={image6} 
+                        alt="Estudiantes y profesores" 
+                        className="w-full h-full object-cover rounded-[10px]" 
+                      />
+                    ]}
+                  />
+                </div>
               </div>
               
               <div className="w-full md:w-1/2 flex flex-col justify-center">
