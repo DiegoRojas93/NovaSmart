@@ -1,5 +1,7 @@
 import { Link } from "react-router"
 
+import logo from "../../assets/Logo NovaSmart.svg"
+
 interface Props {
   themeTextMuted?: string,
   isHidden: boolean,
@@ -18,12 +20,14 @@ const HeaderComponent = ( { themeTextMuted, isHidden, darkMode, toogleTheme  }:P
     <div className="px-5 py-3 flex flex-col md:flex-row justify-between items-center gap-4">
       
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-brand-primary-5 flex items-center justify-center shadow-[0_0_15px_rgba(0,223,130,0.4)]">
-          <span className="text-brand-primary-1 font-black text-xl">N</span>
-        </div>
-        <div>
-          <h1 className="text-2xl font-black tracking-tight">NovaSmart</h1>
-          <span className={`text-[10px] font-bold uppercase tracking-widest ${themeTextMuted}`}>Automatizando la educación</span>
+        {/* Reemplazamos h-10 por px-3 py-1.5 para que el contenedor abrace al logo dinámicamente */}
+        <div className="rounded-xl flex items-center justify-center">
+
+          <img 
+            src={logo} 
+            alt="Logo NovaSmart" 
+            className="w-28 sm:w-32 md:w-64 h-auto object-contain transition-all duration-300" 
+          />
         </div>
       </div>
 
