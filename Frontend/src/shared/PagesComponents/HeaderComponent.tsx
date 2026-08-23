@@ -1,6 +1,7 @@
 import { Link } from "react-router"
 
-import logo from "../../assets/Logo NovaSmart.svg"
+import logo_Darkmode from "../../assets/Logo NovaSmart - Darkmode.svg"
+import logo_Lightmode from "../../assets/Logo NovaSmart - Lightmode.svg"
 
 interface Props {
   themeTextMuted?: string,
@@ -24,7 +25,7 @@ const HeaderComponent = ( { themeTextMuted, isHidden, darkMode, toogleTheme  }:P
         <div className="rounded-xl flex items-center justify-center">
 
           <img 
-            src={logo} 
+            src={darkMode ? logo_Darkmode : logo_Lightmode}
             alt="Logo NovaSmart" 
             className="w-28 sm:w-32 md:w-64 h-auto object-contain transition-all duration-300" 
           />

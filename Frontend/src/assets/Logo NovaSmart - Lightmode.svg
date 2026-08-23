@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 300" width="100%" height="100%">
+  <!-- Definiciones de estilo -->
+  <defs>
+    <style>
+      .logo-text { 
+        font-family: 'Century Gothic', 'Montserrat', 'Helvetica Neue', sans-serif; 
+        font-size: 85px; 
+        fill: #00df82; /* Color verde personalizado para el texto */
+        letter-spacing: 2px; 
+        font-weight: 400; 
+      }
+      .logo-path { fill: #00df82; /* Color verde para el icono (ave/libro) */ }
+      .logo-line { stroke: #00df82; stroke-width: 2.5; /* Color verde para las líneas */ }
+    </style>
+  </defs>
+
+  <!-- Icono Central (Aproximación de Libro/Pájaro) -->
+  <g transform="translate(600, 110) scale(1.6)">
+    <!-- Cabeza del pájaro -->
+    <path class="logo-path" d="M 0 -15 C -6 -15 -10 -5 -5 2 C -2 8 2 8 5 2 C 10 -5 6 -15 0 -15 Z" />
+    
+    <!-- Alas / Hojas Izquierda -->
+    <path class="logo-path" d="M -8 8 Q -50 -20 -130 -45 Q -70 -5 -15 15 Z" />
+    <path class="logo-path" d="M -10 16 Q -50 0 -120 -20 Q -60 12 -18 22 Z" />
+    <path class="logo-path" d="M -12 24 Q -50 15 -110 0 Q -50 22 -15 28 Z" />
+    
+    <!-- Alas / Hojas Derecha -->
+    <path class="logo-path" d="M 8 8 Q 50 -20 130 -45 Q 70 -5 15 15 Z" />
+    <path class="logo-path" d="M 10 16 Q 50 0 120 -20 Q 60 12 18 22 Z" />
+    <path class="logo-path" d="M 12 24 Q 50 15 110 0 Q 50 22 15 28 Z" />
+  </g>
+
+  <!-- Texto Central -->
+  <text x="600" y="260" text-anchor="middle" class="logo-text">NovaSmart</text>
+
+  <!-- Líneas y puntos decorativos laterales -->
+  <!-- Izquierda -->
+  <line x1="200" y1="233" x2="350" y2="233" class="logo-line" />
+  <circle cx="180" cy="233" r="4.5" fill="#00df82" />
+  
+  <!-- Derecha -->
+  <line x1="850" y1="233" x2="1000" y2="233" class="logo-line" />
+  <circle cx="1020" cy="233" r="4.5" fill="#00df82" />
+</svg>
